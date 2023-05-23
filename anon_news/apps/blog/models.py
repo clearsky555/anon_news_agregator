@@ -1,5 +1,7 @@
 from django.db import models
 from apps.accounts.models import User
+import re
+from django.utils.safestring import mark_safe
 
 
 class Category(models.Model):
@@ -42,6 +44,16 @@ class Comment(models.Model):
 
     likes = models.ManyToManyField(User, related_name='liked_comments')
     dislikes = models.ManyToManyField(User, related_name='disliked_comments')
+
+
+    def formatted_text(self):
+        # Парсинг текста комментария и замена ссылок на изображения на соответствующий HTML-код
+        text = self.text
+        # Регулярное выражение для поиска ссылок на изображения
+        image_regex = r'(https?://\S+\.(?:gif|jpe?g|png|webp))'
+        # Замена ссылок на изображения на HTML-тег <img>
+        formatted_text = re.sub(image_regex, r'<img src="\1" style="max-width: 500px;">', text)
+        return mark_safe(formatted_text)
 
     class Meta:
         verbose_name = 'Комментарий'
