@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Все посты
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+      <div class="mb-4">
+        <h4>Filters</h4>
+        <hr>
+        <!-- здесь добавляем элементы фильтрации -->
+      </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+      {% for p in posts %}
+        <div class="row">
+            <div class="col mb-4">
+                <h6>{{ p.author.username }}</h6>
+                <p>{{ p.created_at|date:'Y-m-d H:i' }}</p>
+                <a href="{% url 'post_detail' p.id %}" style="text-decoration:none; color:black;">
+                    <h4>{{p.title}}</h4>
+                </a>
+            <div>
+                <img src="{{ p.image.url }}" alt="" style="width:800px; height: 600px;  object-fit: contain;">
+            </div>
+            <div>
+                <p>{{ p.description }}</p>
+
+                <a type="button" class="btn btn-primary" href="{% url 'like_post' p.id %}">
+                      Нравится <span class="badge text-bg-secondary">{{ p.likes.count }}</span>
+                </a>
+
+                <a type="button" class="btn btn-danger" href="{% url 'dislike_post' p.id %}">
+                      Не нравится <span class="badge text-bg-secondary">{{ p.dislikes.count }}</span>
+                </a>
+
+                <hr>
+            </div>
+            </div>
+        </div>
+      {% endfor %}
+        <nav aria-label="...">
+          <ul class="pagination pagination-lg">
+            <li class="page-item active" aria-current="page">
+              <span class="page-link">1</span>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+          </ul>
+        </nav>
+
+    </div>
+</div>
+{% endblock %}

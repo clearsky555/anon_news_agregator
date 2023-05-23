@@ -1,0 +1,100 @@
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404
+from django.views.generic import ListView, DetailView, CreateView
+from apps.blog.models import Post, Category, Comment
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+from apps.blog.forms import PostCreationForm, CommentForm
+from django.shortcuts import redirect
+
+
+class PostListView(ListView):
+    template_name = 'index.html'
+    model = Post
+    # queryset = Post.objects.all()
+    queryset = Post.objects.order_by('-created_at')  # Упорядочить посты по убыванию времени создания
+    context_object_name = 'posts'
+
+
+class PostDetailView(DetailView):
+    template_name = 'post_detail.html'
+    model = Post
+    queryset = Post.objects.all()
+    context_object_name = 'post'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comment_form'] = CommentForm()
+        return context
+
+
+class PostCreateView(CreateView):
+    template_name = 'post_create.html'
+    model = Post
+    success_url = reverse_lazy('all')
+    form_class = PostCreationForm
+
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        # if self.request.user.is_authenticated:
+        #     post.author = self.request.user
+        # else:
+        #     post.author = None
+        if 'anonymous' in self.request.POST and self.request.POST['anonymous'] == 'on' or self.request.user.is_authenticated == False:
+            post.author = None
+        else:
+            post.author = self.request.user
+        post.save()
+        return super().form_valid(form)
+
+
+def save_comment_form(request, post_id):
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            post = get_object_or_404(Post, id=post_id)
+            comment = form.save(commit=False)
+            # if request.user.is_authenticated:
+            #
+            #     comment.author = request.user
+            # else:
+            #     comment.author = None
+
+            if 'anonymous' in request.POST and request.POST['anonymous'] == 'on' or request.user.is_authenticated==False:
+                comment.author = None
+            else:
+                comment.author = request.user
+
+            comment.post = post
+            comment.save()
+    return redirect(reverse_lazy('post_detail', kwargs={'pk': post_id}))
+
+
+@login_required
+def like_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    user = request.user
+
+    if user in post.dislikes.all():
+        post.dislikes.remove(user)
+
+    if user not in post.likes.all():
+        post.likes.add(user)
+    else:
+        post.likes.remove(user)
+    return redirect(reverse_lazy('post_detail', kwargs={'pk': post_id}))
+
+
+@login_required
+def dislike_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    user = request.user
+
+    if user in post.likes.all():
+        post.likes.remove(user)
+
+    if user not in post.dislikes.all():
+        post.dislikes.add(user)
+    else:
+        post.dislikes.remove(user)
+    return redirect(reverse_lazy('post_detail', kwargs={'pk': post_id}))

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 mt-5">
+        <div class="alert alert-success" role="alert">
+          <h4 class="alert-heading">Регистрация успешно завершена!</h4>
+          <p>Вы успешно прошли регистрацию.</p>
+          <hr>
+          <p class="mb-0">Теперь вы можете <a href="{% url 'all' %}">перейти на главную страницу</a> или <a
+                  href="{% url 'login' %}">войти</a> в свой аккаунт.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

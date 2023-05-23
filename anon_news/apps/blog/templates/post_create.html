@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+
+{% block css %}
+    {{ form.media.css }}
+{% endblock %}
+
+
+{% block content %}
+
+<style>
+  input, select {width: 100%}
+</style>
+
+<div class="container">
+  <div class="row">
+
+      <div class="col-md-8 col-md-offset-2">
+
+        <h1>Создать публикацию</h1>
+
+        <form action="" method="POST" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            {% if form.errors %}
+                <div class="row">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                                </div>
+                        {% endfor %}
+                    {% endfor %}
+                    </div>
+                {% endif %}
+
+
+
+            <div class="form-group">
+                <label for="title">Название <span class="require">*</span></label>
+                {{form.title}}
+            </div>
+
+            <div class="form-group">
+                <label for="description">Описание</label>
+                    {{form.description}}
+            </div>
+
+                <div class="form-group">
+                <label for="description">Изображение</label>
+                    {{form.image}}
+            </div>
+
+
+
+            {% if request.user.is_authenticated %}
+
+            <div class="form-check form-switch">
+
+              <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="anonymous">
+              <label class="form-check-label" for="flexSwitchCheckDefault">Анонимно</label>
+            </div>
+            {% endif %}
+
+
+
+             <div class="form-group">
+
+                <button type="submit" class="btn btn-primary" onclick="this.disabled=true;this.form.submit();">
+                    Создать публикацию
+                </button>
+            </div>
+
+
+        </form>
+    </div>
+
+  </div>
+</div>
+
+
+{% endblock %}
