@@ -40,6 +40,9 @@ class Comment(models.Model):
     # reply_for = models.ForeignKey('self', on_delete=models.CASCADE)
     # image = models.ImageField('Картинка', null=True)
 
+    likes = models.ManyToManyField(User, related_name='liked_comments')
+    dislikes = models.ManyToManyField(User, related_name='disliked_comments')
+
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'

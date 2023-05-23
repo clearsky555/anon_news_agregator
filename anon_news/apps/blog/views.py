@@ -98,3 +98,35 @@ def dislike_post(request, post_id):
     else:
         post.dislikes.remove(user)
     return redirect(reverse_lazy('post_detail', kwargs={'pk': post_id}))
+
+
+@login_required
+def like_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    user = request.user
+    post_id = comment.post_id
+
+    if user in comment.dislikes.all():
+        comment.dislikes.remove(user)
+
+    if user not in comment.likes.all():
+        comment.likes.add(user)
+    else:
+        comment.likes.remove(user)
+    return redirect(reverse_lazy('post_detail', kwargs={'pk': post_id}))
+
+
+@login_required
+def dislike_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    user = request.user
+    post_id = comment.post_id
+
+    if user in comment.likes.all():
+        comment.likes.remove(user)
+
+    if user not in comment.dislikes.all():
+        comment.dislikes.add(user)
+    else:
+        comment.dislikes.remove(user)
+    return redirect(reverse_lazy('post_detail', kwargs={'pk': post_id}))

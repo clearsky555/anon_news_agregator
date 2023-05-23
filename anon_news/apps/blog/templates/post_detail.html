@@ -70,15 +70,15 @@
 
                                       <ul class="list-inline d-sm-flex my-0">
                                         <li class="list-inline-item g-mr-20">
-                                          <a class="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover" href="#!">
+                                          <a type="button" class="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover" href="{% url 'like_comment' comment.id %}">
                                             <i class="fa fa-thumbs-up g-pos-rel g-top-1 g-mr-3"></i>
-                                            178
+                                              {{ comment.likes.count }}
                                           </a>
                                         </li>
                                         <li class="list-inline-item g-mr-20">
-                                          <a class="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover" href="#!">
+                                          <a type="button" class="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover" href="{% url 'dislike_comment' comment.id %}">
                                             <i class="fa fa-thumbs-down g-pos-rel g-top-1 g-mr-3"></i>
-                                            34
+                                            {{ comment.dislikes.count }}
                                           </a>
                                         </li>
                                         <li class="list-inline-item ml-auto">
