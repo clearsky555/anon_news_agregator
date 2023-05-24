@@ -26,7 +26,13 @@
                     <h4>{{p.title}}</h4>
                 </a>
             <div>
-                <img src="{{ p.image.url }}" alt="" style="width:800px; height: 600px;  object-fit: contain;">
+                {% if p.image %}
+                    <a href="{% url 'post_detail' p.id %}">
+                    <img src="{{ p.image.url }}" alt="картинки нет" style="width:400px; height: 300px;  object-fit: contain;" href="{% url 'post_detail' p.id %}">
+                    </a>
+                {% else %}
+                    <p>Картинка отсутствует</p>
+                {% endif %}
             </div>
             <div>
                 <p>{{ p.description }}</p>

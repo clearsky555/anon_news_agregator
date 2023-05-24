@@ -23,9 +23,11 @@ class PostCreationForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['text']
+        fields = ['text', 'image']
         widgets = {
-            'text': forms.Textarea(attrs={'class': 'form-control'}),
-            # 'image': forms.FileInput(attrs={'class': 'form-control'}),
+            'text': forms.Textarea(attrs={'class': 'form-control', 'id':"comment_input"}),
+            'image': forms.FileInput(attrs={'class': 'form-control'}),
 
         }
+
+    enctype = 'multipart/form-data'

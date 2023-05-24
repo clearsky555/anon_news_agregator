@@ -8,7 +8,11 @@
       <div class="row">
           <div class="col-md-9 mb40">
               <article>
-                  <img src="{{ post.image.url }}" alt="" class="img-fluid mb30">
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" alt="" class="img-fluid mb30">
+                {% else %}
+                    <p>Картинка отсутствует</p>
+                {% endif %}
                   <div class="post-content">
                       <h3>{{ post.title }}</h3>
                       <ul class="post-meta list-inline">
@@ -86,10 +90,13 @@
                                             <i class="fa fa-reply g-pos-rel g-top-1 g-mr-3"></i>
                                             Reply
                                           </a>
+                                          <a class="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover" href="#!" onclick="replyComment()">Ответить</a>
+
                                         </li>
                                       </ul>
                                     </div>
                                 </div>
+
                             </div>
 
                         </div>
@@ -100,15 +107,20 @@
 
 
 
-                      <hr class="mb40">
-                      <h4 class="mb40 text-uppercase font500">добавить комментарий</h4>
-                      <form role="form" method="post" action="{% url 'save_comment' post.id %}">
-                        {% csrf_token %}
-                          <div class="form-group">
-                              <label>Комментарий</label>
-                              {{ comment_form.text }}
+  <hr class="mb40">
+  <h4 class="mb40 text-uppercase font500">добавить комментарий</h4>
+      <form method="POST" action="{% url 'save_comment' post.id %}" enctype="multipart/form-data">
 
-                          </div>
+        {% csrf_token %}
+          <div class="form-group">
+              <label>Комментарий</label>
+              {{ comment_form.text}}
+
+<!--              <label>Изображение(не обязательно)</label>-->
+<!--               {{ comment_form.image }}-->
+<!--              изображение прикрепить не удается!-->
+
+          </div>
 
           {% if request.user.is_authenticated %}
 
@@ -123,7 +135,7 @@
                           <div class="clearfix float-right">
                               <button type="submit" class="btn btn-primary btn-lg">Отправить комментарий</button>
                           </div>
-                      </form>
+      </form>
                   </div>
               </article>
               <!-- post article-->
@@ -183,5 +195,17 @@
           </div>
       </div>
   </div>
+
+<script>
+  // Функция для обработки нажатия на кнопку "Ответить"
+  function replyComment() {
+    // Получаем ссылку на поле ввода комментария
+    var commentInput = document.getElementById('comment_input');
+    // Перемещаем пользователя к полю ввода комментария
+    commentInput.scrollIntoView({ behavior: 'smooth' });
+    // Устанавливаем фокус на поле ввода комментария
+    commentInput.focus();
+  }
+</script>
 
 {% endblock %}

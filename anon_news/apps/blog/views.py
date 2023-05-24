@@ -36,10 +36,6 @@ class PostCreateView(CreateView):
 
     def form_valid(self, form):
         post = form.save(commit=False)
-        # if self.request.user.is_authenticated:
-        #     post.author = self.request.user
-        # else:
-        #     post.author = None
         if 'anonymous' in self.request.POST and self.request.POST['anonymous'] == 'on' or self.request.user.is_authenticated == False:
             post.author = None
         else:
@@ -54,11 +50,6 @@ def save_comment_form(request, post_id):
         if form.is_valid():
             post = get_object_or_404(Post, id=post_id)
             comment = form.save(commit=False)
-            # if request.user.is_authenticated:
-            #
-            #     comment.author = request.user
-            # else:
-            #     comment.author = None
 
             if 'anonymous' in request.POST and request.POST['anonymous'] == 'on' or request.user.is_authenticated==False:
                 comment.author = None
