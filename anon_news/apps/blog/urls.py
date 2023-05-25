@@ -8,6 +8,9 @@ urlpatterns = [
     path('post/<int:pk>/', views.PostDetailView.as_view(), name='post_detail'),
     path('post/create/', views.PostCreateView.as_view(), name='post_create'),
     path('post/comment/save/<int:post_id>/', views.save_comment_form, name='save_comment'),
+
+    path('post/comment/save/<int:post_id>/<int:comment_id>/', views.save_comment_reply_form, name='save_comment_reply'),
+
     path('post/like/<int:post_id>/', views.like_post, name='like_post'),
     path('post/dislike/<int:post_id>/', views.dislike_post, name='dislike_post'),
 

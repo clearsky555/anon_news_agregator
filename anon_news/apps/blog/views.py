@@ -61,6 +61,25 @@ def save_comment_form(request, post_id):
     return redirect(reverse_lazy('post_detail', kwargs={'pk': post_id}))
 
 
+def save_comment_reply_form(request, post_id, comment_id):
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            post = get_object_or_404(Post, id=post_id)
+            comment = form.save(commit=False)
+            parent_comment = get_object_or_404(Comment, id=comment_id)
+            comment.reply_for = parent_comment
+
+            if 'anonymous' in request.POST and request.POST['anonymous'] == 'on' or request.user.is_authenticated==False:
+                comment.author = None
+            else:
+                comment.author = request.user
+
+            comment.post = post
+            comment.save()
+    return redirect(reverse_lazy('post_detail', kwargs={'pk': post_id}))
+
+
 @login_required
 def like_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
