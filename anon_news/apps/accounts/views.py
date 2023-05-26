@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import FormView, CreateView, TemplateView
@@ -31,6 +32,10 @@ def user_logout(request):
     return redirect('all')
 
 
+class Profile(TemplateView):
+    template_name = 'profile.html'
+
+
 class UserRegisterView(CreateView):
     model = User
     template_name = 'register.html'
@@ -40,3 +45,13 @@ class UserRegisterView(CreateView):
 
 class RegisterDoneView(TemplateView):
     template_name = 'register_done.html'
+
+
+@login_required
+def save_image(request):
+    if request.method == 'POST':
+        image_file = request.FILES.get('image')
+        if image_file:
+            request.user.image = image_file
+            request.user.save()
+    return redirect('all')

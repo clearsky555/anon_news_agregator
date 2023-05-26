@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<p>это страница пользователя {{ user.username }}</p>
+
+<div class="form-group">
+<label>Аватарка</label>
+    {% if user.image %}
+        <img src="{{ user.image.url }}" alt="аватарка по каким-то причинам не загрузилась...">
+    {% else %}
+        <p> аватарки нет </p>
+    {% endif %}
+
+    {% for post in user.posts.all %}
+        <p>Количество лайков к посту "{{ post.title }}": {{ post.likes.count }}</p>
+    {% endfor %}
+
+    <p>сумма всех МОИХ лайков к постам: {{ user.liked_posts.count }}</p>
+    <p>сумма всех МОИХ лайков к комментариям: {{ user.liked_comments.count }}</p>
+
+    <p> всего лайков за посты и комментарии {{ user.total_likes }}</p>
+
+    <p> всего дизлайков за посты и комментарии {{ user.total_dislikes }}</p>
+
+    <p>рейтинг юзера {{ user.username }}: {{ user.total_likes|add:user.total_dislikes }}</p>
+
+
+
+    <form method="POST" enctype="multipart/form-data" action="{% url 'save_image'  %}">
+    {% csrf_token %}
+    <input type="file" name="image">
+        {{ form.image }}
+    <button type="submit">Загрузить аватарку</button>
+    </form>
+
+</div>
+
+
+{% endblock %}

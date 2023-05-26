@@ -38,6 +38,7 @@
                   <a href="" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">{{ request.user.username }}</a>
                     <ul class="dropdown-menu">
                         <li>
+                            <a href="{% url 'profile' user.id %}" class="dropdown-item">Профиль</a>
                             <a href="{% url 'logout' %}" class="dropdown-item">Выйти</a>
                         </li>
                     </ul>
