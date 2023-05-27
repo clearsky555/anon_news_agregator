@@ -20,7 +20,14 @@
       {% for p in posts %}
         <div class="row">
             <div class="col mb-4">
-                <h6>{{ p.author.username }}</h6>
+                {% if p.author %}
+                    <a href="{% url 'profile' p.author.pk %}" style="text-decoration: none; color: inherit;">
+                    <h6>{{ p.author.username }}</h6>
+                    </a>
+                {% else %}
+                    <h6>{{ p.author.username }}</h6>
+                {% endif %}
+
                 <p>{{ p.created_at|date:'Y-m-d H:i' }}</p>
                 <a href="{% url 'post_detail' p.id %}" style="text-decoration:none; color:black;">
                     <h4>{{p.title}}</h4>
@@ -43,6 +50,10 @@
 
                 <a type="button" class="btn btn-danger" href="{% url 'dislike_post' p.id %}">
                       Не нравится <span class="badge text-bg-secondary">{{ p.dislikes.count }}</span>
+                </a>
+
+                <a type="button" class="btn btn-dark" href="{% url 'post_detail' p.id %}">
+                      Комментарии <span class="badge text-bg-secondary">{{ p.post_comments.count }}</span>
                 </a>
 
                 <hr>

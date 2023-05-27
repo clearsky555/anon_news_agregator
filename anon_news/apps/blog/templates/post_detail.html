@@ -20,7 +20,7 @@
                               <i class="fa fa-user-circle-o"></i>
 
                             {% if post.author is not None %}
-                              <a href="#">{{ post.author }}</a>
+                              <a href="{% url 'profile' post.author.pk %}" style="text-decoration: none; color: inherit;">{{ post.author }}</a>
                             {% else %}
                              <a href="#">Аноним</a>
                             {% endif %}
