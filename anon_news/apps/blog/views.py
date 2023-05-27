@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView
 from apps.blog.models import Post, Category, Comment
@@ -14,6 +15,21 @@ class PostListView(ListView):
     # queryset = Post.objects.all()
     queryset = Post.objects.order_by('-created_at')  # Упорядочить посты по убыванию времени создания
     context_object_name = 'posts'
+
+
+class PopularPostListView(ListView):
+    template_name = 'index.html'
+    model = Post
+    queryset = Post.objects.annotate(total_likes=Count('likes') - Count('dislikes')).order_by('-total_likes')
+    context_object_name = 'posts'
+
+
+class DiscussPostListView(ListView):
+    template_name = 'index.html'
+    model = Post
+    queryset = Post.objects.annotate(comment_count=Count('post_comments')).order_by('-comment_count')
+    context_object_name = 'posts'
+
 
 
 class PostDetailView(DetailView):

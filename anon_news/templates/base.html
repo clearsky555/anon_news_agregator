@@ -29,6 +29,19 @@
       <div class="navbar-nav">
         <a class="nav-link active" aria-current="page" href="#">Home</a>
         <a class="nav-link" href="#">Features</a>
+
+        <div class="dropdown">
+          <a href="" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">Посты</a>
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="{% url 'new_posts' %}" class="dropdown-item">по времени</a>
+                    <a href="{% url 'popular_posts' %}" class="dropdown-item">по рейтингу</a>
+                    <a href="{% url 'discuss_posts' %}" class="dropdown-item">по комментариям</a>
+
+                </li>
+            </ul>
+        </div>
+
         <a class="nav-link" href="#">Pricing</a>
         <a class="nav-link disabled">Disabled</a>
         <a href="{% url 'post_create' %}" class="nav-link">Добавить пост</a>
