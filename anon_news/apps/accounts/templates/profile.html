@@ -12,18 +12,28 @@
         <p> аватарки нет </p>
     {% endif %}
 
+    <h3>Посты пользователя: </h3>
     {% for post in user.posts.all %}
-        <p>Количество лайков к посту "{{ post.title }}": {{ post.likes.count }}</p>
+        <a href="{% url 'post_detail' post.pk %}">
+        <p>{{ post.title }}</p>
+        </a>
     {% endfor %}
 
-    <p>сумма всех МОИХ лайков к постам: {{ user.liked_posts.count }}</p>
-    <p>сумма всех МОИХ лайков к комментариям: {{ user.liked_comments.count }}</p>
+    <h3>Комментарии пользователя: </h3>
+    {% for comment in user.comments.all %}
+    <a href="{{ comment.post.get_absolute_url }}">
+        <p>{{ comment.text }}</p>
+        </a>
+    {% endfor %}
 
-    <p> всего лайков за посты и комментарии {{ user.total_likes }}</p>
+    <h3>сумма всех МОИХ лайков к постам: {{ user.liked_posts.count }}</h3>
+    <h3>сумма всех МОИХ лайков к комментариям: {{ user.liked_comments.count }}</h3>
 
-    <p> всего дизлайков за посты и комментарии {{ user.total_dislikes }}</p>
+    <h3> всего лайков за посты и комментарии {{ user.total_likes }}</h3>
 
-    <p>рейтинг юзера {{ user.username }}: {{ user.total_likes|add:user.total_dislikes }}</p>
+    <h3> всего дизлайков за посты и комментарии {{ user.total_dislikes }}</h3>
+
+    <h3>рейтинг юзера {{ user.username }}: {{ user.total_likes|add:user.total_dislikes }}</h3>
 
 
 

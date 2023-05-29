@@ -30,8 +30,6 @@ class User(AbstractUser):
 
         post_likes = post_likes if post_likes is not None else 0
         comment_likes = comment_likes if comment_likes is not None else 0
-        print(post_likes)
-        print(comment_likes)
 
         return post_likes + comment_likes
 
@@ -41,7 +39,5 @@ class User(AbstractUser):
 
         post_dislikes = post_dislikes if post_dislikes is not None else 0
         comment_dislikes = comment_dislikes if comment_dislikes is not None else 0
-        print(post_dislikes)
-        print(comment_dislikes)
 
         return (post_dislikes + comment_dislikes)*(-1)

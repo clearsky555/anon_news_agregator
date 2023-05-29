@@ -1,8 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView
-from apps.blog.models import Post, Category, Comment
+from django.views.generic import ListView, DetailView, CreateView, TemplateView
+
+from apps.accounts.models import User
+from apps.blog.models import Post, Category, Comment, Notification
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from apps.blog.forms import PostCreationForm, CommentForm
@@ -156,3 +158,20 @@ def dislike_comment(request, comment_id):
     else:
         comment.dislikes.remove(user)
     return redirect(reverse_lazy('post_detail', kwargs={'pk': post_id}))
+
+
+class NotificationView(LoginRequiredMixin, ListView):
+    model = Notification
+    template_name = 'notification.html'
+    context_object_name = 'notifications'
+
+    def get_queryset(self):
+        user = self.request.user
+        return Notification.objects.filter(user=user, is_read=False).order_by('-created_at')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        unread_count = Notification.objects.filter(user=user, is_read=False).count()
+        context['unread_count'] = unread_count
+        return context

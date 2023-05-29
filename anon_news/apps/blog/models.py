@@ -1,7 +1,10 @@
+from django.utils import timezone
+
 from django.db import models
 from apps.accounts.models import User
 import re
 from django.utils.safestring import mark_safe
+from django.urls import reverse
 
 
 class Category(models.Model):
@@ -33,6 +36,9 @@ class Post(models.Model):
         verbose_name = 'Пост'
         verbose_name_plural = 'Посты'
 
+    def get_absolute_url(self):
+        return reverse('post_detail', args=[str(self.id)])
+
 
 class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments', null=True)
@@ -44,6 +50,20 @@ class Comment(models.Model):
 
     likes = models.ManyToManyField(User, related_name='liked_comments')
     dislikes = models.ManyToManyField(User, related_name='disliked_comments')
+
+    def save(self, *args, **kwargs):
+        created = not self.pk  # Check if a new comment is being created or an existing one is being updated
+        super().save(*args, **kwargs)
+
+        if created:
+            # Create a notification only for the author of the post
+            Notification.objects.create(
+                user=self.post.author,
+                post=self.post,
+                comment=self,
+                is_read=False,
+                created_at=timezone.now()
+            )
 
 
     def formatted_text(self):
@@ -61,3 +81,14 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'{self.text}'
+
+
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='notifications')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']

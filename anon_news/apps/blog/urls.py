@@ -21,4 +21,6 @@ urlpatterns = [
     path('popular/', views.PopularPostListView.as_view(), name='popular_posts'),
     path('discuss/', views.DiscussPostListView.as_view(), name='discuss_posts'),
 
+    path('notifications/', views.NotificationView.as_view(), name='notifications'),
+
 ]

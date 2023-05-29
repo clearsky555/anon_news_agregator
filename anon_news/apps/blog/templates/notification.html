@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <p>hello, {{ user.username }}</p>
+    <p>Количество новых комментариев к вашим постам:  {{ unread_count }}</p>
+
+{% for notification in notifications %}
+    <div>
+        {% if notification.comment.author is not None %}
+        <p>{{ notification.comment.author.username }} оставил(а) новый комментарий в посте "{{ notification.post.title }}"</p>
+        {% else %}
+        <p>аноним оставил(а) новый комментарий в посте "{{ notification.post.title }}"</p>
+        {% endif %}
+        <p>{{ notification.comment.text }}</p>
+    </div>
+{% endfor %}
+
+{% endblock %}
