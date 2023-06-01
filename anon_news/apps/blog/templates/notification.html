@@ -2,7 +2,12 @@
 
 {% block content %}
     <p>hello, {{ user.username }}</p>
-    <p>Количество новых комментариев к вашим постам:  {{ unread_count }}</p>
+    <p>Количество новых уведомлений:  {{ unread_count }}</p>
+
+    <form method="post" action="{% url 'mark_notifications_as_read' %}">
+        {% csrf_token %}
+        <button type="submit">Прочитано</button>
+    </form>
 
 {% for notification in notifications %}
     <div>
@@ -15,6 +20,15 @@
 
         <p>{{ notification.liker.username }} поставил лайк вашему посту "{{ notification.liked_post.title }}"</p>
         <p>{{ notification.disliker.username }} поставил дизлайк вашему посту "{{ notification.liked_post.title }}"</p>
+
+        <p>{{ notification.liker.username }} поставил(а) лайк вашему комментарию "{{ notification.comment.text }}"</p>
+
+        <p>{{ notification.disliker.username }} поставил(а) дизлайк вашему комментарию "{{ notification.comment.text }}"</p>
+
+        {% if notification.reply_to_comment is not None %}
+            <p>{{ notification.reply_to_comment.author.username }} ответил(а) на ваш комментарий "{{ notification.reply_to_comment.text }}"</p>
+        {% endif %}
+
 
     </div>
 {% endfor %}

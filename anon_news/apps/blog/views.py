@@ -96,6 +96,16 @@ def save_comment_reply_form(request, post_id, comment_id):
 
             comment.post = post
             comment.save()
+
+            # Создаем объект уведомления при реплае к комментарию
+            Notification.objects.create(
+                user=parent_comment.author,  # Автору комментария, на который был оставлен реплай
+                post=post,
+                comment=comment,
+                reply_to_comment=parent_comment,
+                is_read=False,
+                created_at=timezone.now()
+            )
     return redirect(reverse_lazy('post_detail', kwargs={'pk': post_id}))
 
 
@@ -109,16 +119,19 @@ def like_post(request, post_id):
 
     if user not in post.likes.all():
         post.likes.add(user)
+        # Проверяем наличие существующего уведомления
+        existing_notification = Notification.objects.filter(user=post.author, post=post, liker=user).first()
+        if not existing_notification:
 
-        # Создаем объект Notification при лайке
-        Notification.objects.create(
-            user=post.author,  # Автору поста
-            post=post,
-            liker=user,  # Пользователь, который поставил лайк
-            liked_post=post,
-            is_read=False,
-            created_at=timezone.now()
-        )
+            # Создаем объект Notification при лайке
+            Notification.objects.create(
+                user=post.author,  # Автору поста
+                post=post,
+                liker=user,  # Пользователь, который поставил лайк
+                liked_post=post,
+                is_read=False,
+                created_at=timezone.now()
+            )
     else:
         post.likes.remove(user)
     post.save()
@@ -135,15 +148,17 @@ def dislike_post(request, post_id):
 
     if user not in post.dislikes.all():
         post.dislikes.add(user)
-        # Создаем объект Notification при лайке
-        Notification.objects.create(
-            user=post.author,  # Автору поста
-            post=post,
-            disliker=user,  # Пользователь, который поставил лайк
-            liked_post=post,
-            is_read=False,
-            created_at=timezone.now()
-        )
+        existing_notification = Notification.objects.filter(user=post.author, post=post, liker=user).first()
+        if not existing_notification:
+            # Создаем объект Notification при лайке
+            Notification.objects.create(
+                user=post.author,  # Автору поста
+                post=post,
+                disliker=user,  # Пользователь, который поставил лайк
+                liked_post=post,
+                is_read=False,
+                created_at=timezone.now()
+            )
     else:
         post.dislikes.remove(user)
     post.save()
@@ -161,6 +176,18 @@ def like_comment(request, comment_id):
 
     if user not in comment.likes.all():
         comment.likes.add(user)
+        existing_notification = Notification.objects.filter(user=comment.post.author, post=comment.post, comment=comment, liker=user).first()
+
+        if not existing_notification:
+            Notification.objects.create(
+                user=comment.post.author,  # Автор поста, к которому привязан комментарий
+                post=comment.post,
+                comment=comment,
+                liker=user,  # Пользователь, который поставил лайк
+                liked_post=comment.post,
+                is_read=False,
+                created_at=timezone.now()
+            )
     else:
         comment.likes.remove(user)
     return redirect(reverse_lazy('post_detail', kwargs={'pk': post_id}))
@@ -177,6 +204,19 @@ def dislike_comment(request, comment_id):
 
     if user not in comment.dislikes.all():
         comment.dislikes.add(user)
+        existing_notification = Notification.objects.filter(user=comment.post.author, post=comment.post, comment=comment, liker=user).first()
+
+        if not existing_notification:
+
+            Notification.objects.create(
+                user=comment.post.author,  # Автор поста, к которому привязан комментарий
+                post=comment.post,
+                comment=comment,
+                disliker=user,  # Пользователь, который поставил лайк
+                liked_post=comment.post,
+                is_read=False,
+                created_at=timezone.now()
+            )
     else:
         comment.dislikes.remove(user)
     return redirect(reverse_lazy('post_detail', kwargs={'pk': post_id}))
@@ -197,3 +237,9 @@ class NotificationView(LoginRequiredMixin, ListView):
         unread_count = Notification.objects.filter(user=user, is_read=False).count()
         context['unread_count'] = unread_count
         return context
+
+
+def mark_notifications_as_read(request):
+    if request.method == 'POST':
+        request.user.notifications.filter(is_read=False).update(is_read=True)
+    return redirect('notifications')

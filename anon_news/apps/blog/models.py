@@ -87,6 +87,7 @@ class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='notifications')
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True)
+    reply_to_comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True, blank=True, related_name='notification_replies')
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     liker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='liked_notifications', null=True)

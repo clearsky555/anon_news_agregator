@@ -23,4 +23,6 @@ urlpatterns = [
 
     path('notifications/', views.NotificationView.as_view(), name='notifications'),
 
+    path('notifications/mark-as-read/', views.mark_notifications_as_read, name='mark_notifications_as_read'),
+
 ]
