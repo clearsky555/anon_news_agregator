@@ -86,9 +86,12 @@ class Comment(models.Model):
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='notifications')
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True)
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    liker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='liked_notifications', null=True)
+    disliker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='disliked_notifications', null=True)
+    liked_post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='liked_notifications', null=True)
 
     class Meta:
         ordering = ['-created_at']

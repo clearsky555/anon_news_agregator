@@ -9,6 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from apps.blog.forms import PostCreationForm, CommentForm
 from django.shortcuts import redirect
+from django.utils import timezone
 
 
 class PostListView(ListView):
@@ -108,8 +109,19 @@ def like_post(request, post_id):
 
     if user not in post.likes.all():
         post.likes.add(user)
+
+        # Создаем объект Notification при лайке
+        Notification.objects.create(
+            user=post.author,  # Автору поста
+            post=post,
+            liker=user,  # Пользователь, который поставил лайк
+            liked_post=post,
+            is_read=False,
+            created_at=timezone.now()
+        )
     else:
         post.likes.remove(user)
+    post.save()
     return redirect(reverse_lazy('post_detail', kwargs={'pk': post_id}))
 
 
@@ -123,8 +135,18 @@ def dislike_post(request, post_id):
 
     if user not in post.dislikes.all():
         post.dislikes.add(user)
+        # Создаем объект Notification при лайке
+        Notification.objects.create(
+            user=post.author,  # Автору поста
+            post=post,
+            disliker=user,  # Пользователь, который поставил лайк
+            liked_post=post,
+            is_read=False,
+            created_at=timezone.now()
+        )
     else:
         post.dislikes.remove(user)
+    post.save()
     return redirect(reverse_lazy('post_detail', kwargs={'pk': post_id}))
 
 

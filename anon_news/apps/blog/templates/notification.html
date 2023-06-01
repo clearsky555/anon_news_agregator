@@ -7,11 +7,15 @@
 {% for notification in notifications %}
     <div>
         {% if notification.comment.author is not None %}
-        <p>{{ notification.comment.author.username }} оставил(а) новый комментарий в посте "{{ notification.post.title }}"</p>
+            <p>{{ notification.comment.author.username }} оставил(а) новый комментарий в посте "{{ notification.post.title }}"</p>
         {% else %}
-        <p>аноним оставил(а) новый комментарий в посте "{{ notification.post.title }}"</p>
+            <p>аноним оставил(а) новый комментарий в посте "{{ notification.post.title }}"</p>
         {% endif %}
         <p>{{ notification.comment.text }}</p>
+
+        <p>{{ notification.liker.username }} поставил лайк вашему посту "{{ notification.liked_post.title }}"</p>
+        <p>{{ notification.disliker.username }} поставил дизлайк вашему посту "{{ notification.liked_post.title }}"</p>
+
     </div>
 {% endfor %}
 
