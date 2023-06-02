@@ -34,7 +34,6 @@ class DiscussPostListView(ListView):
     context_object_name = 'posts'
 
 
-
 class PostDetailView(DetailView):
     template_name = 'post_detail.html'
     model = Post
@@ -120,14 +119,14 @@ def like_post(request, post_id):
     if user not in post.likes.all():
         post.likes.add(user)
         # Проверяем наличие существующего уведомления
-        existing_notification = Notification.objects.filter(user=post.author, post=post, liker=user).first()
+        existing_notification = Notification.objects.filter(user=post.author, post=post, post_liker=user).first()
         if not existing_notification:
 
             # Создаем объект Notification при лайке
             Notification.objects.create(
                 user=post.author,  # Автору поста
                 post=post,
-                liker=user,  # Пользователь, который поставил лайк
+                post_liker=user,  # Пользователь, который поставил лайк посту
                 liked_post=post,
                 is_read=False,
                 created_at=timezone.now()
@@ -148,13 +147,13 @@ def dislike_post(request, post_id):
 
     if user not in post.dislikes.all():
         post.dislikes.add(user)
-        existing_notification = Notification.objects.filter(user=post.author, post=post, liker=user).first()
+        existing_notification = Notification.objects.filter(user=post.author, post=post, post_disliker=user).first()
         if not existing_notification:
             # Создаем объект Notification при лайке
             Notification.objects.create(
                 user=post.author,  # Автору поста
                 post=post,
-                disliker=user,  # Пользователь, который поставил лайк
+                post_disliker=user,  # Пользователь, который поставил лайк посту
                 liked_post=post,
                 is_read=False,
                 created_at=timezone.now()
@@ -176,14 +175,14 @@ def like_comment(request, comment_id):
 
     if user not in comment.likes.all():
         comment.likes.add(user)
-        existing_notification = Notification.objects.filter(user=comment.post.author, post=comment.post, comment=comment, liker=user).first()
+        existing_notification = Notification.objects.filter(user=comment.post.author, post=comment.post, comment=comment, comment_liker=user).first()
 
         if not existing_notification:
             Notification.objects.create(
-                user=comment.post.author,  # Автор поста, к которому привязан комментарий
+                user=comment.author,  # тот, кому придет уведомление, автор комментария
                 post=comment.post,
                 comment=comment,
-                liker=user,  # Пользователь, который поставил лайк
+                comment_liker=user,  # Пользователь, который поставил лайк комменту
                 liked_post=comment.post,
                 is_read=False,
                 created_at=timezone.now()
@@ -204,15 +203,15 @@ def dislike_comment(request, comment_id):
 
     if user not in comment.dislikes.all():
         comment.dislikes.add(user)
-        existing_notification = Notification.objects.filter(user=comment.post.author, post=comment.post, comment=comment, liker=user).first()
+        existing_notification = Notification.objects.filter(user=comment.post.author, post=comment.post, comment=comment, comment_disliker=user).first()
 
         if not existing_notification:
 
             Notification.objects.create(
-                user=comment.post.author,  # Автор поста, к которому привязан комментарий
+                user=comment.author,  # тот, кому придет уведомление, автор комментария
                 post=comment.post,
                 comment=comment,
-                disliker=user,  # Пользователь, который поставил лайк
+                comment_disliker=user,  # Пользователь, который поставил лайк
                 liked_post=comment.post,
                 is_read=False,
                 created_at=timezone.now()

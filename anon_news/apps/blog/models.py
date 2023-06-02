@@ -56,14 +56,16 @@ class Comment(models.Model):
         super().save(*args, **kwargs)
 
         if created:
-            # Create a notification only for the author of the post
-            Notification.objects.create(
-                user=self.post.author,
-                post=self.post,
-                comment=self,
-                is_read=False,
-                created_at=timezone.now()
-            )
+            existing_notification = Notification.objects.filter(user=self.post.author, post=self.post, comment=self).first()
+            if not existing_notification:
+                # Create a notification only for the author of the post
+                Notification.objects.create(
+                    user=self.post.author,
+                    post=self.post,
+                    comment=self,
+                    is_read=False,
+                    created_at=timezone.now()
+                )
 
 
     def formatted_text(self):
@@ -90,8 +92,10 @@ class Notification(models.Model):
     reply_to_comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True, blank=True, related_name='notification_replies')
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    liker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='liked_notifications', null=True)
-    disliker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='disliked_notifications', null=True)
+    post_liker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='liked_notifications', null=True)
+    post_disliker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='disliked_notifications', null=True)
+    comment_liker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comment_liked_notifications', null=True)
+    comment_disliker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comment_disliked_notifications', null=True)
     liked_post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='liked_notifications', null=True)
 
     class Meta:

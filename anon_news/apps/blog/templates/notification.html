@@ -9,28 +9,43 @@
         <button type="submit">Прочитано</button>
     </form>
 
-{% for notification in notifications %}
-    <div>
-        {% if notification.comment.author is not None %}
-            <p>{{ notification.comment.author.username }} оставил(а) новый комментарий в посте "{{ notification.post.title }}"</p>
-        {% else %}
-            <p>аноним оставил(а) новый комментарий в посте "{{ notification.post.title }}"</p>
+ {% for notification in notifications %}
+    {% if not notification.is_read %}
+
+            {% if notification.comment %}
+                {% if notification.comment.author %}
+                    <p>{{ notification.comment.author.username }} оставил(а) новый комментарий в посте "{{ notification.post.title }}"</p>
+                {% else %}
+                    <p>Аноним оставил(а) новый комментарий в посте "{{ notification.post.title }}"</p>
+                {% endif %}
+            {% endif %}
+
+            {% if notification.post_liker %}
+                <p>{{ notification.post_liker.username }} поставил лайк вашему посту "{{ notification.liked_post.title }}"</p>
+            {% endif %}
+
+            {% if notification.post_disliker %}
+                <p>{{ notification.post_disliker.username }} поставил дизлайк вашему посту "{{ notification.liked_post.title }}"</p>
+            {% endif %}
+
+            {% if notification.comment_liker  %}
+                <p>{{ notification.comment_liker.username }} поставил(а) лайк вашему комментарию "{{ notification.comment.text }}"</p>
+            {% endif %}
+
+            {% if notification.comment_disliker %}
+                <p>{{ notification.comment_disliker.username }} поставил(а) дизлайк вашему комментарию "{{ notification.comment.text }}"</p>
+            {% endif %}
+
+            {% if notification.reply_to_comment %}
+                {% if notification.comment.author %}
+                    <p>{{ notification.comment.author.username }} ответил(а) на ваш комментарий "{{ notification.comment.text }}"</p>
+                {% else %}
+                    <p>Аноним ответил(а) на ваш комментарий "{{ notification.comment.text }}"</p>
+                {% endif %}
+            {% endif %}
+            <p>-------------------</p>
+
         {% endif %}
-        <p>{{ notification.comment.text }}</p>
-
-        <p>{{ notification.liker.username }} поставил лайк вашему посту "{{ notification.liked_post.title }}"</p>
-        <p>{{ notification.disliker.username }} поставил дизлайк вашему посту "{{ notification.liked_post.title }}"</p>
-
-        <p>{{ notification.liker.username }} поставил(а) лайк вашему комментарию "{{ notification.comment.text }}"</p>
-
-        <p>{{ notification.disliker.username }} поставил(а) дизлайк вашему комментарию "{{ notification.comment.text }}"</p>
-
-        {% if notification.reply_to_comment is not None %}
-            <p>{{ notification.reply_to_comment.author.username }} ответил(а) на ваш комментарий "{{ notification.reply_to_comment.text }}"</p>
-        {% endif %}
-
-
-    </div>
-{% endfor %}
+    {% endfor %}
 
 {% endblock %}
