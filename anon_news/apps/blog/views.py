@@ -75,6 +75,7 @@ def save_comment_form(request, post_id):
                 comment.author = request.user
 
             comment.post = post
+            comment.is_parent = True
             comment.save()
     return redirect(reverse_lazy('post_detail', kwargs={'pk': post_id}))
 
@@ -228,7 +229,12 @@ class NotificationView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         user = self.request.user
-        return Notification.objects.filter(user=user, is_read=False).order_by('-created_at')
+        qs = Notification.objects.filter(user=user, is_read=False).order_by('-created_at')
+        # qs.update(is_read=True)
+        return qs
+
+    def get_text(self):
+        pass
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

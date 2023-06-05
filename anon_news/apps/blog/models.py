@@ -47,6 +47,7 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     reply_for = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
     image = models.ImageField('Картинка', upload_to='posts/comments/images/', blank=True)
+    is_parent = models.BooleanField('self', default=False)
 
     likes = models.ManyToManyField(User, related_name='liked_comments')
     dislikes = models.ManyToManyField(User, related_name='disliked_comments')
@@ -97,6 +98,6 @@ class Notification(models.Model):
     comment_liker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comment_liked_notifications', null=True)
     comment_disliker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comment_disliked_notifications', null=True)
     liked_post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='liked_notifications', null=True)
-
+    text = ''
     class Meta:
         ordering = ['-created_at']
