@@ -368,3 +368,7 @@ body{
 .media-comment {
     margin-top:20px
 }
+.comment-image {
+  width: 100%; /* Adjust the width as needed */
+  height: auto; /* Maintain the aspect ratio */
+}

@@ -39,6 +39,9 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse('post_detail', args=[str(self.id)])
 
+    def __str__(self):
+        return f'{self.title}'
+
 
 class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments', null=True)
@@ -46,7 +49,7 @@ class Comment(models.Model):
     text = models.TextField('Комментарий')
     created_at = models.DateTimeField(auto_now_add=True)
     reply_for = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
-    image = models.ImageField('Картинка', upload_to='posts/comments/images/', blank=True)
+    image = models.ImageField('Картинка', upload_to='comments/images/', blank=True, null=True)
     is_parent = models.BooleanField('self', default=False)
 
     likes = models.ManyToManyField(User, related_name='liked_comments')
@@ -65,7 +68,8 @@ class Comment(models.Model):
                     post=self.post,
                     comment=self,
                     is_read=False,
-                    created_at=timezone.now()
+                    created_at=timezone.now(),
+                    message=f'в вашем посте {self.post} появился новый комментарий от {self.author}',
                 )
 
 
@@ -98,6 +102,6 @@ class Notification(models.Model):
     comment_liker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comment_liked_notifications', null=True)
     comment_disliker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comment_disliked_notifications', null=True)
     liked_post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='liked_notifications', null=True)
-    text = ''
+    message = models.TextField(null=True)
     class Meta:
         ordering = ['-created_at']

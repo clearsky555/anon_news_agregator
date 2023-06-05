@@ -70,6 +70,10 @@
 
                       <p class="comment-images">{{ comment.formatted_text|safe }}</p>
 
+                      {% if comment.image %}
+                      <img src="{{ comment.image.url }}" alt="аватарка по каким-то причинам не загрузилась..." class="comment-image">
+                      {% endif %}
+
                       <ul class="list-inline d-sm-flex my-0">
                         <li class="list-inline-item g-mr-20">
                           <a type="button" class="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover" href="{% url 'like_comment' comment.id %}">
@@ -107,6 +111,9 @@
                                               {{ comment_form.text}}
 
                                           </div>
+                                        <div class='form-group'>
+                                        {{ comment_form.image }}
+                                        </div>
 
                                           {% if request.user.is_authenticated %}
 
@@ -155,6 +162,13 @@
 
 
           </div>
+            <div class='form-group'>
+
+            {{ comment_form.image }}
+
+            </div>
+
+
 
           {% if request.user.is_authenticated %}
 

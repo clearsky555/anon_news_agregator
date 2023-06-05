@@ -64,7 +64,7 @@ class PostCreateView(CreateView):
 
 def save_comment_form(request, post_id):
     if request.method == 'POST':
-        form = CommentForm(request.POST)
+        form = CommentForm(request.POST, request.FILES)
         if form.is_valid():
             post = get_object_or_404(Post, id=post_id)
             comment = form.save(commit=False)
@@ -77,12 +77,20 @@ def save_comment_form(request, post_id):
             comment.post = post
             comment.is_parent = True
             comment.save()
+            # Notification.objects.create(
+            #     user=post.author,  # уведомление для автора поста
+            #     post=post,
+            #     comment=comment,
+            #
+            #     is_read=False,
+            #     created_at=timezone.now()
+            # )
     return redirect(reverse_lazy('post_detail', kwargs={'pk': post_id}))
 
 
 def save_comment_reply_form(request, post_id, comment_id):
     if request.method == 'POST':
-        form = CommentForm(request.POST)
+        form = CommentForm(request.POST, request.FILES)
         if form.is_valid():
             post = get_object_or_404(Post, id=post_id)
             comment = form.save(commit=False)
@@ -104,7 +112,8 @@ def save_comment_reply_form(request, post_id, comment_id):
                 comment=comment,
                 reply_to_comment=parent_comment,
                 is_read=False,
-                created_at=timezone.now()
+                created_at=timezone.now(),
+                message=f'{comment.author} ответил на ваш комментарий {comment}'
             )
     return redirect(reverse_lazy('post_detail', kwargs={'pk': post_id}))
 
@@ -130,7 +139,8 @@ def like_post(request, post_id):
                 post_liker=user,  # Пользователь, который поставил лайк посту
                 liked_post=post,
                 is_read=False,
-                created_at=timezone.now()
+                created_at=timezone.now(),
+                message=f'вашему посту {post} поставил лайк пользователь {user}'
             )
     else:
         post.likes.remove(user)
@@ -157,7 +167,9 @@ def dislike_post(request, post_id):
                 post_disliker=user,  # Пользователь, который поставил лайк посту
                 liked_post=post,
                 is_read=False,
-                created_at=timezone.now()
+                created_at=timezone.now(),
+                message=f'вашему посту {post} поставил дизлайк пользователь {user}'
+
             )
     else:
         post.dislikes.remove(user)
@@ -186,7 +198,9 @@ def like_comment(request, comment_id):
                 comment_liker=user,  # Пользователь, который поставил лайк комменту
                 liked_post=comment.post,
                 is_read=False,
-                created_at=timezone.now()
+                created_at=timezone.now(),
+                message=f'вашему комментарию {comment} поставил лайк пользователь {user}'
+
             )
     else:
         comment.likes.remove(user)
@@ -215,7 +229,9 @@ def dislike_comment(request, comment_id):
                 comment_disliker=user,  # Пользователь, который поставил лайк
                 liked_post=comment.post,
                 is_read=False,
-                created_at=timezone.now()
+                created_at=timezone.now(),
+                message=f'вашему комментарию {comment} поставил дизлайк пользователь {user}'
+
             )
     else:
         comment.dislikes.remove(user)
