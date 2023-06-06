@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Count
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, TemplateView
@@ -264,3 +264,20 @@ def mark_notifications_as_read(request):
     if request.method == 'POST':
         request.user.notifications.filter(is_read=False).update(is_read=True)
     return redirect('notifications')
+
+
+@user_passes_test(lambda user: user.is_staff)
+def delete_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    post.delete()
+    return redirect(reverse_lazy('all'))
+
+
+@user_passes_test(lambda user: user.is_staff)
+def delete_comment(request, post_id, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    # comment.delete()
+    comment.author = None
+    comment.text = 'комментарий удален'
+    comment.save()
+    return redirect(reverse_lazy('post_detail', kwargs={'pk': post_id}))

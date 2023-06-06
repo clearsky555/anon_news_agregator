@@ -44,6 +44,12 @@
                       Не нравится <span class="badge text-bg-secondary">{{ post.dislikes.count }}</span>
                       </a>
 
+                      {% if user.is_staff %}
+                      <a type="button" class="btn btn-dark" href="{% url 'delete_post' post.id %}">
+                          Удалить пост
+                      </a>
+                      {% endif %}
+
 
                       <hr class="mb40">
                       <h4 class="mb40 text-uppercase font500">Комментарии</h4>
@@ -59,7 +65,9 @@
                     <div class="media-body u-shadow-v18 g-bg-secondary g-pa-30">
                       <div class="g-mb-15">
                         {% if comment.author is not None %}
+                        <a href="{% url 'profile' comment.author.pk %}" style="text-decoration: none; color: inherit;">
                         <h5 class="h5 g-color-gray-dark-v1 mb-0">{{ comment.author }}</h5>
+                        </a>
                           {% else %}
                         <h5 class="h5 g-color-gray-dark-v1 mb-0">Аноним</h5>
 
@@ -71,7 +79,7 @@
                       <p class="comment-images">{{ comment.formatted_text|safe }}</p>
 
                       {% if comment.image %}
-                      <img src="{{ comment.image.url }}" alt="аватарка по каким-то причинам не загрузилась..." class="comment-image">
+                      <img src="{{ comment.image.url }}" alt="картинка по каким-то причинам не загрузилась..." class="comment-image">
                       {% endif %}
 
                       <ul class="list-inline d-sm-flex my-0">
@@ -87,17 +95,18 @@
                             {{ comment.dislikes.count }}
                           </a>
                         </li>
-                        <li class="list-inline-item ml-auto">
 
-                            <a class="reply-link" href="#" onclick="showReplyForm({{ comment.id }})">Reply</a>
-                            <a class="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover" href="#!" onclick="replyComment('{{ comment.id }}')">Ответить</a>
-
-                        </li>
                           <div class="reply mx-0">
 
                               <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#replyBox{{ comment.id }}" aria-expanded="false" aria-controls="replyBox{{ comment.id }}">
                                 Reply
                               </button>
+
+                              {% if user.is_staff %}
+                              <a type="button" class="btn btn-dark" href="{% url 'delete_comment' post.id comment.id %}">
+                                  Удалить комментарий
+                              </a>
+                              {% endif %}
 
                             <div class="collapse" id="replyBox{{ comment.id }}">
                               <div class="card card-body">

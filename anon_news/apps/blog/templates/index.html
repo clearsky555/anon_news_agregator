@@ -56,6 +56,12 @@
                       Комментарии <span class="badge text-bg-secondary">{{ p.post_comments.count }}</span>
                 </a>
 
+                {% if user.is_staff %}
+                <a type="button" class="btn btn-dark" href="{% url 'delete_post' p.id %}">
+                      Удалить пост
+                </a>
+                {% endif %}
+
                 <hr>
             </div>
             </div>
