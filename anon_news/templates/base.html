@@ -27,8 +27,18 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
-        <a class="nav-link active" aria-current="page" href="#">Home</a>
-        <a class="nav-link" href="#">Features</a>
+<!--        <a class="nav-link active" aria-current="page" href="#">Home</a>-->
+        <div class="dropdown">
+        <a class="dropdown-toggle nav-link" href="" data-bs-toggle="dropdown">Сообщества</a>
+           <ul class="dropdown-menu">
+                <li>
+                    <a href="" class="dropdown-item">создать сообщество</a>
+                    <a href="" class="dropdown-item">популярные сообщества</a>
+                    <a href="" class="dropdown-item">мои сообщества</a>
+
+                </li>
+            </ul>
+        </div>
 
         <div class="dropdown">
           <a href="" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">Посты</a>
@@ -42,8 +52,8 @@
             </ul>
         </div>
 
-        <a class="nav-link" href="#">Pricing</a>
-        <a class="nav-link disabled">Disabled</a>
+<!--        <a class="nav-link" href="#">Pricing</a>-->
+<!--        <a class="nav-link disabled">Disabled</a>-->
         <a href="{% url 'post_create' %}" class="nav-link">Добавить пост</a>
 <!--          <div class="nav-link">-->
               {% if request.user.is_authenticated %}
