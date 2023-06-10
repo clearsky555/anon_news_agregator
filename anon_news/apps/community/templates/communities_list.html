@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+
+<h3>Это все сообщества</h3>
+
+<div class="row">
+    <div class="col-md-8">
+      {% for c in communities %}
+      <div class="row">
+            <div class="col mb-4">
+                {{ c.creator }}
+                <a href="{% url 'community_detail' c.slug %}">
+                <h4>{{ c.title }}</h4>
+                </a>
+            </div>
+          <div>
+              <p>{{ c.description }}</p>
+          </div>
+          <div>
+              <p>Количество подписчиков: {{ c.subscribers.count }}</p>
+          </div>
+
+
+      </div>
+        ---------------------
+      {% endfor %}
+    </div>
+</div>
+
+
+{% endblock %}

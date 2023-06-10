@@ -32,7 +32,8 @@
         <a class="dropdown-toggle nav-link" href="" data-bs-toggle="dropdown">Сообщества</a>
            <ul class="dropdown-menu">
                 <li>
-                    <a href="" class="dropdown-item">создать сообщество</a>
+                    <a href="{% url 'new_community' %}" class="dropdown-item">создать сообщество</a>
+                    <a href="{% url 'all_communities' %}" class="dropdown-item">все сообщества</a>
                     <a href="" class="dropdown-item">популярные сообщества</a>
                     <a href="" class="dropdown-item">мои сообщества</a>
 

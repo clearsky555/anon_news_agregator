@@ -6,6 +6,8 @@ import re
 from django.utils.safestring import mark_safe
 from django.urls import reverse
 
+from apps.community.models import Community
+
 
 class Category(models.Model):
     name = models.CharField(verbose_name='Название категории', max_length=100)
@@ -30,6 +32,7 @@ class Post(models.Model):
 
     likes = models.ManyToManyField(User, related_name='liked_posts')
     dislikes = models.ManyToManyField(User, related_name='disliked_posts')
+    community = models.ForeignKey(Community, on_delete=models.SET_NULL, null=True, related_name='community_posts')
 
 
     class Meta:

@@ -11,6 +11,8 @@ from apps.blog.forms import PostCreationForm, CommentForm
 from django.shortcuts import redirect
 from django.utils import timezone
 
+from apps.community.models import Community
+
 
 class PostListView(ListView):
     template_name = 'index.html'
@@ -51,6 +53,13 @@ class PostCreateView(CreateView):
     model = Post
     success_url = reverse_lazy('all')
     form_class = PostCreationForm
+    #
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     community_slug = self.kwargs['community_slug']
+    #     community = get_object_or_404(Community, slug=community_slug)
+    #     context['community'] = community
+    #     return context
 
     def form_valid(self, form):
         post = form.save(commit=False)
@@ -58,6 +67,9 @@ class PostCreateView(CreateView):
             post.author = None
         else:
             post.author = self.request.user
+        community_slug = self.kwargs['community_slug']
+        community = get_object_or_404(Community, slug=community_slug)
+        post.community = community  # Связываем поле community с сообществом
         post.save()
         return super().form_valid(form)
 

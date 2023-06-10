@@ -1,23 +1,32 @@
 {% extends 'base.html' %}
 
-{% block title %}
-    Все посты
-{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-4">
-      <div class="mb-4">
-        <h4>Filters</h4>
-        <hr>
-        <!-- здесь добавляем элементы фильтрации -->
-      </div>
-    </div>
-</div>
+    <p>{{ community.creator }}</p>
 
-<div class="row">
-    <div class="col-md-8">
-      {% for p in posts %}
+    <h2>{{ community.title }}</h2>
+
+    <p>{{ community.description }}</p>
+
+    <p>Количество подписчиков: {{ community.subscribers.count }}</p>
+
+
+    <a type="button" class="btn btn-primary" href="{% url 'subscribe_community' community.slug %}">
+      Подписаться
+    </a>
+
+    <a type="button" class="btn btn-danger" href="{% url 'unsubscribe_community' community.slug %}">
+      Отписаться
+    </a>
+
+    <div>
+    <a type="button" class="btn btn-dark" href="{% url 'post_create' community.slug %}">
+      Создать пост
+    </a>
+    </div>
+
+{% if community_posts %}
+    {% for p in community_posts %}
         <div class="row">
             <div class="col mb-4">
                 {% if p.author %}
@@ -66,17 +75,9 @@
             </div>
             </div>
         </div>
-      {% endfor %}
-        <nav aria-label="...">
-          <ul class="pagination pagination-lg">
-            <li class="page-item active" aria-current="page">
-              <span class="page-link">1</span>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-          </ul>
-        </nav>
+    {% endfor %}
+{% else %}
+    <p>Пока нет постов для этого сообщества.</p>
+{% endif %}
 
-    </div>
-</div>
 {% endblock %}
