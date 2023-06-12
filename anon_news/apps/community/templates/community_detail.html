@@ -2,6 +2,9 @@
 
 
 {% block content %}
+    {% if user not in community.subscribers.all and community.is_private %}
+        <p>Доступ запрещен</p>
+    {% else %}
     <p>{{ community.creator }}</p>
 
     <h2>{{ community.title }}</h2>
@@ -80,4 +83,5 @@
     <p>Пока нет постов для этого сообщества.</p>
 {% endif %}
 
+{% endif %}
 {% endblock %}

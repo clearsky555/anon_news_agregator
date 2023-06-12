@@ -25,6 +25,24 @@
 
 
       </div>
+
+    <a type="button" class="btn btn-primary" href="{% url 'subscribe_community' c.slug %}">
+      Подписаться
+    </a>
+
+    <a type="button" class="btn btn-danger" href="{% url 'unsubscribe_community' c.slug %}">
+      Отписаться
+    </a>
+        {% if user.is_authenticated and user in c.subscribers.all %}
+            <div class="alert alert-success d-flex align-items-center" role="alert">
+                    <span class="mr-2">&#10003;</span>
+                    <p class="mb-0">Вы подписаны на это сообщество</p>
+            </div>
+        {% else %}
+            <div class="alert alert-secondary" role="alert">
+                    <p class="mb-0">Вы не подписаны</p>
+            </div>
+        {% endif %}
         ---------------------
       {% endfor %}
     </div>

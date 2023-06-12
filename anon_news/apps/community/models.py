@@ -10,6 +10,7 @@ class Community(models.Model):
     slug = models.SlugField(max_length=255, unique=True)
     description = models.TextField(verbose_name='описание сообщества', null=True)
     subscribers = models.ManyToManyField(User, related_name='sub_communities')
+    is_private = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Сообщество'

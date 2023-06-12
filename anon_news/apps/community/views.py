@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, DetailView
@@ -16,6 +17,9 @@ class CommunityCreateView(CreateView):
 
     def form_valid(self, form):
         community = form.save(commit=False)
+        if 'private_com' in self.request.POST and self.request.POST['private_com'] == 'on':
+            community.is_private = True
+
         community.creator = self.request.user
         community.save()
         return super().form_valid(form)
@@ -26,6 +30,25 @@ class AllCommunitiesView(ListView):
     model = Community
     queryset = Community.objects.all()
     context_object_name = 'communities'
+
+
+class PopularCommunitiesView(ListView):
+    template_name = 'communities_list.html'
+    model = Community
+    queryset = Community.objects.annotate(num_subscribers=Count('subscribers')).order_by('-num_subscribers')
+    context_object_name = 'communities'
+
+
+@login_required
+def my_communities(request):
+    user = request.user
+    communities = user.sub_communities.all()
+
+    context = {
+        'communities': communities
+    }
+
+    return render(request, 'communities_list.html', context)
 
 
 class CommunityDetailView(DetailView):
