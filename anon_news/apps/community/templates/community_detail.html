@@ -2,7 +2,7 @@
 
 
 {% block content %}
-    {% if user not in community.subscribers.all and community.is_private %}
+    {% if user not in community.subscribers.all and community.is_private and user != community.creator %}
         <p>Доступ запрещен</p>
     {% else %}
     <p>{{ community.creator }}</p>
@@ -14,19 +14,27 @@
     <p>Количество подписчиков: {{ community.subscribers.count }}</p>
 
 
-    <a type="button" class="btn btn-primary" href="{% url 'subscribe_community' community.slug %}">
+    <a type="button" class="btn btn-primary mr-2" href="{% url 'subscribe_community' community.slug %}">
       Подписаться
     </a>
 
-    <a type="button" class="btn btn-danger" href="{% url 'unsubscribe_community' community.slug %}">
+    <a type="button" class="btn btn-danger mr-2" href="{% url 'unsubscribe_community' community.slug %}">
       Отписаться
     </a>
 
-    <div>
+    <div class="mt-2">
     <a type="button" class="btn btn-dark" href="{% url 'post_create' community.slug %}">
       Создать пост
     </a>
     </div>
+
+    {% if user == community.creator %}
+        <div class="mt-2">
+        <a type="button" class="btn btn-dark" href="{% url 'application_processing' community.slug %}">
+          заявки на вступление <span class="badge text-bg-secondary">{{ community.application.count }}</span>
+        </a>
+        </div>
+    {% endif %}
 
 {% if community_posts %}
     {% for p in community_posts %}

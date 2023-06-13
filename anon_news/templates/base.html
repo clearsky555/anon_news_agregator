@@ -78,6 +78,13 @@
     </div>
   </div>
 </nav>
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+        <li class="alert alert-success">{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
 
 
 <div class="content">

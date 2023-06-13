@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 
-
 {% block content %}
 
 <h3>Это все сообщества</h3>
@@ -11,6 +10,11 @@
       {% for c in communities %}
       <div class="row">
             <div class="col mb-4">
+                {% if c.is_private %}
+                    <p class="text-secondary">приватное сообщество</p>
+                {% else %}
+                    <p class="text-secondary">открытое сообщество</p>
+                {% endif %}
                 {{ c.creator }}
                 <a href="{% url 'community_detail' c.slug %}">
                 <h4>{{ c.title }}</h4>
@@ -26,13 +30,23 @@
 
       </div>
 
-    <a type="button" class="btn btn-primary" href="{% url 'subscribe_community' c.slug %}">
-      Подписаться
-    </a>
+    {% if c.is_private %}
+        <a type="button" class="btn btn-primary" href="{% url 'membership_application' c.slug %}">
+          Подать заявку на вступление
+        </a>
 
-    <a type="button" class="btn btn-danger" href="{% url 'unsubscribe_community' c.slug %}">
-      Отписаться
-    </a>
+    {% else %}
+
+        <a type="button" class="btn btn-primary" href="{% url 'subscribe_community' c.slug %}">
+          Подписаться
+        </a>
+
+        <a type="button" class="btn btn-danger" href="{% url 'unsubscribe_community' c.slug %}">
+          Отписаться
+        </a>
+
+    {% endif %}
+
         {% if user.is_authenticated and user in c.subscribers.all %}
             <div class="alert alert-success d-flex align-items-center" role="alert">
                     <span class="mr-2">&#10003;</span>

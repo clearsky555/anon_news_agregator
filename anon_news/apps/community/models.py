@@ -11,6 +11,7 @@ class Community(models.Model):
     description = models.TextField(verbose_name='описание сообщества', null=True)
     subscribers = models.ManyToManyField(User, related_name='sub_communities')
     is_private = models.BooleanField(default=False)
+    application = models.ManyToManyField(User, related_name='membership_applications')
 
     class Meta:
         verbose_name = 'Сообщество'

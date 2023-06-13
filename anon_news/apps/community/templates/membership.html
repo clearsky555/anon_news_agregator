@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<p>hello</p>
+
+    {% for a in applications %}
+        <p>Пользователь <a href="{% url 'profile' a.pk %}">{{ a }}</a>  подал заявку на вступление в сообщество</p>
+
+        <a type="button" class="btn btn-primary" href="{% url 'accept' community_slug=community.slug user_id=a.pk %}">
+          Принять заявку
+        </a>
+
+        <a type="button" class="btn btn-danger" href="{% url 'decline' community_slug=community.slug user_id=a.pk %}">
+          Отклонить
+        </a>
+
+    {% endfor %}
+
+
+
+{% endblock %}
