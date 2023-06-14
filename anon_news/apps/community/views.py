@@ -197,3 +197,47 @@ class Decline(LoginRequiredMixin, RedirectView):
 
 def forbidden(request):
     return render(request, '403.html')
+
+
+class SubscribersListView(ListView):
+    template_name = 'subscribers.html'
+    model = User
+    context_object_name = 'subscribers'
+
+    def get_queryset(self):
+        community_slug = self.kwargs['community_slug']
+        community = Community.objects.get(slug=community_slug)
+        return community.subscribers.all()
+
+    def dispatch(self, request, *args, **kwargs):
+        community_slug = self.kwargs['community_slug']
+        community = Community.objects.get(slug=community_slug)
+
+        if request.user not in community.subscribers.all():
+            return redirect('forbidden')
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        community_slug = self.kwargs['community_slug']
+        community = get_object_or_404(Community, slug=community_slug)
+        context['community'] = community
+        context['request_user'] = self.request.user
+        return context
+
+
+class ExcludeUserView(LoginRequiredMixin, RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        community_slug = kwargs['community_slug']
+        user_id = kwargs['user_id']
+        community = get_object_or_404(Community, slug=community_slug)
+        user = get_object_or_404(User, pk=user_id)
+
+        if self.request.user != community.creator:
+            return reverse('forbidden')
+
+        community.subscribers.remove(user)
+        community.save()
+
+        return reverse('subscribers', kwargs={'community_slug': community_slug})

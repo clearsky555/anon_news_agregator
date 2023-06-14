@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+    {% for s in subscribers %}
+        <p>{{ s }}</p>
+{% if request_user == community.creator %}
+        <a type="button" class="btn btn-danger" href="{% url 'exclude_user' community_slug=community.slug user_id=s.pk %}">
+              исключить юзера
+        </a>
+{% endif %}
+    {% endfor %}
+
+{% endblock %}

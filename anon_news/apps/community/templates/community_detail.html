@@ -11,7 +11,11 @@
 
     <p>{{ community.description }}</p>
 
-    <p>Количество подписчиков: {{ community.subscribers.count }}</p>
+    <div class="mt-2 mb-2">
+    <a type="button" class="btn btn-dark" href="{% url 'subscribers' community.slug %}">
+      Количество подписчиков: <span class="badge text-bg-secondary">{{ community.subscribers.count }}</span>
+    </a>
+    </div>
 
 
     <a type="button" class="btn btn-primary mr-2" href="{% url 'subscribe_community' community.slug %}">

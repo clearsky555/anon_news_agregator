@@ -33,7 +33,7 @@
 
     <h3> всего дизлайков за посты и комментарии {{ some_user.total_dislikes }}</h3>
 
-    <h3>рейтинг юзера {{ some_user.username }}: {{ some_user.total_likes|add:user.total_dislikes }}</h3>
+    <h3>рейтинг юзера {{ some_user.username }}: {{ some_user.total_likes|add:some_user.total_dislikes }}</h3>
 
 
     {% if some_user == profile_user %}
