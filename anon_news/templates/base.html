@@ -64,6 +64,7 @@
                         <li>
                             <a href="{% url 'profile' user.id %}" class="dropdown-item">Профиль</a>
                             <a href="{% url 'notifications' %}" class="dropdown-item">Уведомления ({{ unread_count }})</a>
+                            <a href="{% url 'index' %}" class="dropdown-item">Личные сообщения</a>
                             <a href="{% url 'logout' %}" class="dropdown-item">Выйти</a>
                         </li>
                     </ul>

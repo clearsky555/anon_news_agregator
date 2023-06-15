@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Count
+from django.http import Http404
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, TemplateView
 
@@ -61,16 +62,36 @@ class PostCreateView(CreateView):
     #     context['community'] = community
     #     return context
 
+    # def form_valid(self, form):
+    #     post = form.save(commit=False)
+    #     if 'anonymous' in self.request.POST and self.request.POST['anonymous'] == 'on' or self.request.user.is_authenticated == False:
+    #         post.author = None
+    #     else:
+    #         post.author = self.request.user
+    #     community_slug = self.kwargs['community_slug']
+    #     community = get_object_or_404(Community, slug=community_slug)
+    #     post.community = community  # Связываем поле community с сообществом
+    #     post.save()
+    #     return super().form_valid(form)
     def form_valid(self, form):
         post = form.save(commit=False)
         if 'anonymous' in self.request.POST and self.request.POST['anonymous'] == 'on' or self.request.user.is_authenticated == False:
             post.author = None
         else:
             post.author = self.request.user
-        community_slug = self.kwargs['community_slug']
-        community = get_object_or_404(Community, slug=community_slug)
-        post.community = community  # Связываем поле community с сообществом
-        post.save()
+
+        community_slug = self.kwargs.get('community_slug')
+        if community_slug:
+            community = get_object_or_404(Community, slug=community_slug)
+            post.community = community
+        else:
+            post.community = None
+
+        try:
+            post.save()
+        except ValueError:
+            raise Http404("Invalid community_slug")
+
         return super().form_valid(form)
 
 

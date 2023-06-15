@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+    <p>личные сообщения</p>
+    {% if dialogues %}
+        {% for d in dialogues %}
+
+            {{ d }}
+
+        {% endfor %}
+    {% else %}
+    у вас нет личных сообщений
+    {% endif %}
+{% endblock %}

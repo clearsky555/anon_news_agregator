@@ -35,6 +35,10 @@
 
     <h3>рейтинг юзера {{ some_user.username }}: {{ some_user.total_likes|add:some_user.total_dislikes }}</h3>
 
+    <a type="button" class="btn btn-primary" href="{% url 'all' %}">
+          написать сообщение
+    </a>
+
 
     {% if some_user == profile_user %}
     <form method="POST" enctype="multipart/form-data" action="{% url 'save_image'  %}">
