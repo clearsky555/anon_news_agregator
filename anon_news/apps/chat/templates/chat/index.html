@@ -1,14 +1,26 @@
 <!-- chat/templates/chat/index.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <title>Chat Rooms</title>
-</head>
+{% extends 'base.html' %}
+
+{% block title %}
+Chat Rooms
+{% endblock %}
+{% block content %}
 <body>
-    What chat room would you like to enter?<br>
+    Напишите название комнаты<br>
     <input id="room-name-input" type="text" size="100"><br>
     <input id="room-name-submit" type="button" value="Enter">
+
+    {% for chat in chats %}
+    <p>
+        <a href="{% url 'room' room_name=chat.name %}">
+        {{ chat }}
+        </a>
+        участники чата: {{ chat.participants.all }}
+    </p>
+    <a type="button" class="btn btn-danger" href="{% url 'delete_chat' chat.name %}">
+          удалить чат
+    </a>
+    {% endfor %}
 
     <script>
         document.querySelector('#room-name-input').focus();
@@ -24,4 +36,4 @@
         };
     </script>
 </body>
-</html>
+{% endblock %}

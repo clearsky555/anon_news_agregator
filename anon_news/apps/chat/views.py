@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.contrib.auth.decorators import user_passes_test
+from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView
 
 from apps.chat.models import Chat
@@ -18,8 +19,25 @@ from apps.chat.models import Chat
 
 
 def index(request):
-    return render(request, "chat/index.html")
+    queryset = request.user.chats.all()
+    context = {
+        'chats': queryset,
+    }
+
+    return render(request, "chat/index.html", context)
 
 
 def room(request, room_name):
     return render(request, "chat/room.html", {"room_name": room_name})
+
+
+# СЮДА НУЖНО ДОБАВИТЬ БЕЗОПАСНОСТЬ!!!
+def delete_chat(request, chat_name):
+    chat = get_object_or_404(Chat, name=chat_name)
+    chat.delete()
+    queryset = request.user.chats.all()
+    context = {
+        'chats': queryset,
+    }
+    return render(request, "chat/index.html", context)
+

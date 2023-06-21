@@ -1,10 +1,10 @@
 <!-- chat/templates/chat/room.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <title>Chat Room</title>
-</head>
+{% extends 'base.html' %}
+
+{% block title %}
+Chat Room
+{% endblock %}
+{% block content %}
 <body>
     <textarea id="chat-log" cols="100" rows="20"></textarea><br>
     <input id="chat-message-input" type="text" size="100"><br>
@@ -56,4 +56,4 @@
         };
     </script>
 </body>
-</html>
+{% endblock %}

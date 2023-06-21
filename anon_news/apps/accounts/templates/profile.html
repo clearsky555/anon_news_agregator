@@ -3,6 +3,10 @@
 
 {% block content %}
 <p>это страница пользователя {{ some_user.username }}</p>
+<a type="button" class="btn btn-primary" href="{% url 'room' room_name=room_name %}">
+      написать сообщение
+</a>
+
 
 <div class="form-group">
 <label>Аватарка</label>
@@ -35,9 +39,6 @@
 
     <h3>рейтинг юзера {{ some_user.username }}: {{ some_user.total_likes|add:some_user.total_dislikes }}</h3>
 
-    <a type="button" class="btn btn-primary" href="{% url 'all' %}">
-          написать сообщение
-    </a>
 
 
     {% if some_user == profile_user %}
