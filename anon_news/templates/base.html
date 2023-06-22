@@ -15,7 +15,7 @@
       <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 
 
-    <title>{% block title %} Document {% endblock %}</title>
+    <title>{% block title %} anon news {% endblock %}</title>
 </head>
 <body>
 
@@ -79,9 +79,9 @@
     </div>
   </div>
 </nav>
-{% if messages %}
+{% if mssgs %}
 <ul class="messages">
-    {% for message in messages %}
+    {% for message in mssgs %}
         <li class="alert alert-success">{{ message }}</li>
     {% endfor %}
 </ul>

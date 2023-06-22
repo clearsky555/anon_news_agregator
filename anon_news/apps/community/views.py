@@ -1,4 +1,4 @@
-from django.contrib import messages
+from django.contrib import messages as mssgs
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
@@ -13,7 +13,7 @@ from apps.community.models import Community
 
 
 # Create your views here.
-class CommunityCreateView(CreateView):
+class CommunityCreateView(LoginRequiredMixin, CreateView):
     template_name = 'community_create.html'
     model = Community
     success_url = reverse_lazy('all')
@@ -100,11 +100,11 @@ def membership(request, community_slug):
         community.application.add(user)
         community.save()
 
-        messages.success(request, 'Ваша заявка на вступление отправлена успешно.')
+        mssgs.success(request, 'Ваша заявка на вступление отправлена успешно.')
     else:
-        messages.success(request, 'вы уже подали заявку на вступление')
+        mssgs.success(request, 'вы уже подали заявку на вступление')
 
-    return render(request, 'base.html')
+    return render(request, 'base.html', {'mssgs': mssgs.get_messages(request)})
 
 
 # class ApllicationProcessingView(ListView):
@@ -143,8 +143,8 @@ class ApllicationProcessingView(LoginRequiredMixin, ListView):
         user = request.user
 
         if not (user.is_authenticated and user == community.creator):
-            messages.success(request, 'у вас нет прав на данное действие')
-            return render(request, 'base.html')
+            mssgs.success(request, 'у вас нет прав на данное действие')
+            return render(request, 'base.html', {'mssgs': mssgs.get_messages(request)})
 
         return super().dispatch(request, *args, **kwargs)
 
