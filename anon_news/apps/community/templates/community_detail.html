@@ -80,7 +80,7 @@
                       Комментарии <span class="badge text-bg-secondary">{{ p.post_comments.count }}</span>
                 </a>
 
-                {% if user.is_staff %}
+                {% if user.is_staff or user == community.creator %}
                 <a type="button" class="btn btn-dark" href="{% url 'delete_post' p.id %}">
                       Удалить пост
                 </a>

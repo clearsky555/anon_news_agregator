@@ -102,7 +102,7 @@
                                 Reply
                               </button>
 
-                              {% if user.is_staff %}
+                              {% if user.is_staff or user == community.creator %}
                               <a type="button" class="btn btn-dark" href="{% url 'delete_comment' post.id comment.id %}">
                                   Удалить комментарий
                               </a>

@@ -45,7 +45,9 @@ class PostDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        post = self.get_object()
         context['comment_form'] = CommentForm()
+        context['community'] = post.community
         return context
 
 
@@ -299,18 +301,31 @@ def mark_notifications_as_read(request):
     return redirect('notifications')
 
 
-@user_passes_test(lambda user: user.is_staff)
+@login_required
 def delete_post(request, post_id):
+    user = request.user
     post = get_object_or_404(Post, id=post_id)
-    post.delete()
+    community = post.community
+    print('-----------')
+    print(community)
+    print('-----------')
+    if user.is_staff or user == community.creator:
+        post.delete()
+    else:
+        return redirect('forbidden')
     return redirect(reverse_lazy('all'))
 
 
-@user_passes_test(lambda user: user.is_staff)
+@login_required
 def delete_comment(request, post_id, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
-    # comment.delete()
-    comment.author = None
-    comment.text = 'комментарий удален'
-    comment.save()
+    user = request.user
+    post = get_object_or_404(Post, id=post_id)
+    community = post.community
+    if user.is_staff or user == community.creator:
+        comment.author = None
+        comment.text = 'комментарий удален'
+        comment.save()
+    else:
+        return redirect('forbidden')
     return redirect(reverse_lazy('post_detail', kwargs={'pk': post_id}))
