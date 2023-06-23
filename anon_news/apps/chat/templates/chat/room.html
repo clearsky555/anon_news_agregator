@@ -8,7 +8,7 @@ Chat Room
 <body>
     <textarea id="chat-log" cols="100" rows="20">
         {% for message in messages %}
-            {{ message.sender.username }}: {{ message.text_message }}
+            {{ message.sender.username }}: {{ message.timestamp }}: {{ message.text_message }}
         {% endfor %}
     </textarea><br>
     <input id="chat-message-input" type="text" size="100"><br>
@@ -31,7 +31,9 @@ Chat Room
             const isMe = data.user === requestUser;
             const source = isMe ? 'me' : 'other';
             const name = isMe ? 'Me' : data.user;
-            document.querySelector('#chat-log').value += (name+ ': ' + data.message + '\n');
+            const dateOptions = {hour: 'numeric', minute: 'numeric', hour12: true};
+            const datetime = new Date(data.datetime).toLocaleString('en', dateOptions);
+            document.querySelector('#chat-log').value += (name+ ': '+ datetime+ ': ' + data.message + '\n');
         };
 
         chatSocket.onclose = function(e) {
