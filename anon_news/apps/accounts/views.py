@@ -3,12 +3,12 @@ import uuid
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import AnonymousUser
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import FormView, CreateView, TemplateView
 from apps.accounts.forms import LoginForm, UserRegisterForm
 from django.http import HttpResponse
-from apps.accounts.models import User
+from apps.accounts.models import User, BannedIP
 from django.urls import reverse_lazy
 
 from apps.chat.models import Chat
@@ -77,6 +77,16 @@ class UserRegisterView(CreateView):
     form_class = UserRegisterForm
     success_url = reverse_lazy('register_done')
 
+    def form_valid(self, form):
+        user_ip_address = self.request.META.get('HTTP_X_FORWARDED_FOR')
+        if user_ip_address:
+            ip = user_ip_address.split(',')[0]
+        else:
+            ip = self.request.META.get('REMOTE_ADDR')
+
+        form.instance.ip_address = ip
+        return super().form_valid(form)
+
 
 class RegisterDoneView(TemplateView):
     template_name = 'register_done.html'
@@ -89,4 +99,21 @@ def save_image(request):
         if image_file:
             request.user.image = image_file
             request.user.save()
+    return redirect('all')
+
+
+@login_required
+def permaban(request, pk):
+    user = request.user
+    ban_user = get_object_or_404(User, pk=pk)
+    ip_address = ban_user.ip_address
+    print('------IP------')
+    print(ip_address)
+    print(f'------{ban_user}------')
+    if user.is_staff:
+        ip = BannedIP.objects.create(ip_address=ip_address)
+        ip.save()
+    else:
+        return redirect('forbidden')
+
     return redirect('all')

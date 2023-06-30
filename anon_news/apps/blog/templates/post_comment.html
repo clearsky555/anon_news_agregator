@@ -1,4 +1,5 @@
 <!-- post_comment.html -->
+
 <div class="col-md-8 offset-md-1">
     <div class="media g-mb-30 media-comment">
         <img class="d-flex g-width-50 g-height-50 rounded-circle g-mt-3 g-mr-15" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Image Description">
@@ -40,6 +41,12 @@
                           Удалить комментарий
                      </a>
                      {% endif %}
+
+                    {% if user.is_staff %}
+                    <a type="button" class="btn btn-danger" href="{% url 'comment_permaban' comment.pk %}">
+                        забанить комментатора
+                    </a>
+                    {% endif %}
 
                     <div class="collapse" id="replyBox{{ comment.id }}">
                         <div class="card card-body">

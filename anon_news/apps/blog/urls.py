@@ -27,4 +27,7 @@ urlpatterns = [
 
     path('post/delete/<int:post_id>/', views.delete_post, name='delete_post'),
     path('post/comment/delete/<int:post_id>/<int:comment_id>', views.delete_comment, name='delete_comment'),
+
+    path('post/permaban/<int:pk>/', views.post_permaban, name='post_permaban'),
+    path('comment/permaban/<int:pk>/', views.comment_permaban, name='comment_permaban'),
 ]

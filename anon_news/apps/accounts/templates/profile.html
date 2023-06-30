@@ -6,7 +6,11 @@
 <a type="button" class="btn btn-primary" href="{% url 'room' room_name=room_name %}">
       написать сообщение
 </a>
-
+{% if profile_user.is_staff %}
+<a type="button" class="btn btn-danger" href="{% url 'permaban' some_user.pk %}">
+    забанить пользователя
+</a>
+{% endif %}
 
 <div class="form-group">
 <label>Аватарка</label>

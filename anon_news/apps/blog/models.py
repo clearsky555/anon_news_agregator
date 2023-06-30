@@ -34,6 +34,9 @@ class Post(models.Model):
     dislikes = models.ManyToManyField(User, related_name='disliked_posts')
     community = models.ForeignKey(Community, on_delete=models.SET_NULL, null=True, related_name='community_posts')
 
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+
+
 
     class Meta:
         verbose_name = 'Пост'
@@ -57,6 +60,9 @@ class Comment(models.Model):
 
     likes = models.ManyToManyField(User, related_name='liked_comments')
     dislikes = models.ManyToManyField(User, related_name='disliked_comments')
+
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+
 
     def save(self, *args, **kwargs):
         created = not self.pk  # Check if a new comment is being created or an existing one is being updated

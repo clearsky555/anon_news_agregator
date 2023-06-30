@@ -4,7 +4,7 @@ from django.http import Http404
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, TemplateView
 
-from apps.accounts.models import User
+from apps.accounts.models import User, BannedIP
 from apps.blog.models import Post, Category, Comment, Notification
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
@@ -56,25 +56,15 @@ class PostCreateView(CreateView):
     model = Post
     success_url = reverse_lazy('all')
     form_class = PostCreationForm
-    #
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     community_slug = self.kwargs['community_slug']
-    #     community = get_object_or_404(Community, slug=community_slug)
-    #     context['community'] = community
-    #     return context
 
-    # def form_valid(self, form):
-    #     post = form.save(commit=False)
-    #     if 'anonymous' in self.request.POST and self.request.POST['anonymous'] == 'on' or self.request.user.is_authenticated == False:
-    #         post.author = None
-    #     else:
-    #         post.author = self.request.user
-    #     community_slug = self.kwargs['community_slug']
-    #     community = get_object_or_404(Community, slug=community_slug)
-    #     post.community = community  # Связываем поле community с сообществом
-    #     post.save()
-    #     return super().form_valid(form)
+    def get_ip_address(self, request):
+        user_ip_address = request.META.get('HTTP_X_FORWARDED_FOR')
+        if user_ip_address:
+            ip = user_ip_address.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
+
     def form_valid(self, form):
         post = form.save(commit=False)
         if 'anonymous' in self.request.POST and self.request.POST['anonymous'] == 'on' or self.request.user.is_authenticated == False:
@@ -90,6 +80,7 @@ class PostCreateView(CreateView):
             post.community = None
 
         try:
+            post.ip_address = self.get_ip_address(self.request)  # Сохраняем IP-адрес
             post.save()
         except ValueError:
             raise Http404("Invalid community_slug")
@@ -111,6 +102,15 @@ def save_comment_form(request, post_id):
 
             comment.post = post
             comment.is_parent = True
+
+            # Получаем IP-адрес из HTTP-запроса
+            ip_address = request.META.get('HTTP_X_FORWARDED_FOR')
+            if ip_address:
+                ip = ip_address.split(',')[0]
+            else:
+                ip = request.META.get('REMOTE_ADDR')
+            comment.ip_address = ip
+
             comment.save()
             # Notification.objects.create(
             #     user=post.author,  # уведомление для автора поста
@@ -138,6 +138,15 @@ def save_comment_reply_form(request, post_id, comment_id):
                 comment.author = request.user
 
             comment.post = post
+
+            # Получаем IP-адрес из HTTP-запроса
+            ip_address = request.META.get('HTTP_X_FORWARDED_FOR')
+            if ip_address:
+                ip = ip_address.split(',')[0]
+            else:
+                ip = request.META.get('REMOTE_ADDR')
+            comment.ip_address = ip
+            
             comment.save()
 
             # Создаем объект уведомления при реплае к комментарию
@@ -329,3 +338,37 @@ def delete_comment(request, post_id, comment_id):
     else:
         return redirect('forbidden')
     return redirect(reverse_lazy('post_detail', kwargs={'pk': post_id}))
+
+
+@login_required
+def post_permaban(request, pk):
+    user = request.user
+    post = get_object_or_404(Post, id=pk)
+    ip_address = post.ip_address
+    print('------IP------')
+    print(ip_address)
+    print(f'------{post}------')
+    if user.is_staff:
+        ip = BannedIP.objects.create(ip_address=ip_address)
+        ip.save()
+    else:
+        return redirect('forbidden')
+
+    return redirect('all')
+
+
+@login_required
+def comment_permaban(request, pk):
+    user = request.user
+    comment = get_object_or_404(Comment, id=pk)
+    ip_address = comment.ip_address
+    print('------IP------')
+    print(ip_address)
+    print(f'------{comment}------')
+    if user.is_staff:
+        ip = BannedIP.objects.create(ip_address=ip_address)
+        ip.save()
+    else:
+        return redirect('forbidden')
+
+    return redirect('all')

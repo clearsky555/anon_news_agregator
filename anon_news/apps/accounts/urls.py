@@ -10,4 +10,5 @@ urlpatterns = [
     path('profile/<int:pk>/', views.Profile.as_view(), name='profile'),
     path('profile/save_image/', views.save_image, name='save_image'),
 
+    path('permaban/<int:pk>/', views.permaban, name='permaban'),
 ]

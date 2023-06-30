@@ -3,6 +3,7 @@
 
 {% block content %}
 
+
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
   <div class="container pb50">
       <div class="row">
@@ -48,6 +49,12 @@
                       <a type="button" class="btn btn-dark" href="{% url 'delete_post' post.id %}">
                           Удалить пост
                       </a>
+                      {% endif %}
+
+                      {% if user.is_staff %}
+                        <a type="button" class="btn btn-danger" href="{% url 'post_permaban' post.pk %}">
+                            забанить создателя поста
+                        </a>
                       {% endif %}
 
 
@@ -106,6 +113,12 @@
                               <a type="button" class="btn btn-dark" href="{% url 'delete_comment' post.id comment.id %}">
                                   Удалить комментарий
                               </a>
+                              {% endif %}
+
+                              {% if user.is_staff %}
+                                <a type="button" class="btn btn-danger" href="{% url 'comment_permaban' comment.pk %}">
+                                    забанить комментатора
+                                </a>
                               {% endif %}
 
                             <div class="collapse" id="replyBox{{ comment.id }}">
