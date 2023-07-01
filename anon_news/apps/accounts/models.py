@@ -12,7 +12,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
     username = models.CharField(unique=True, max_length=150)
-    image = models.ImageField('аватарка', upload_to='user/images/')
+    image = models.ImageField('аватарка', upload_to='user/images/', default='user/default55555.png')
     is_staff = models.BooleanField(default=False)
     ip_address = models.GenericIPAddressField(null=True, blank=True)
 

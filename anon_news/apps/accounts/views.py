@@ -1,3 +1,4 @@
+import os
 import uuid
 
 from django.contrib.auth.decorators import login_required
@@ -12,7 +13,6 @@ from apps.accounts.models import User, BannedIP
 from django.urls import reverse_lazy
 
 from apps.chat.models import Chat
-
 
 class LoginView(FormView):
     template_name = 'login.html'
@@ -96,6 +96,9 @@ class RegisterDoneView(TemplateView):
 def save_image(request):
     if request.method == 'POST':
         image_file = request.FILES.get('image')
+        if request.user.image and os.path.basename(request.user.image.name) != 'default55555.png':
+            request.user.image.delete()
+
         if image_file:
             request.user.image = image_file
             request.user.save()
