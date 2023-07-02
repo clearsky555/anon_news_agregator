@@ -34,6 +34,8 @@ def room(request, room_name):
 
     # Получите все сообщения для данного чата
     messages = Message.objects.filter(chat=chat)
+    if request.user not in chat.participants.all():
+        return redirect('forbidden')
 
     context = {
         "room_name": room_name,

@@ -21,6 +21,7 @@ class PostListView(ListView):
     # queryset = Post.objects.all()
     queryset = Post.objects.order_by('-created_at')  # Упорядочить посты по убыванию времени создания
     context_object_name = 'posts'
+    paginate_by = 15
 
 
 class PopularPostListView(ListView):

@@ -17,9 +17,7 @@ Chat Rooms
         </a>
         участники чата: {{ chat.participants.all }}
     </p>
-    <a type="button" class="btn btn-primary" href="">
-          Пригласить юзера
-    </a>
+
     <a type="button" class="btn btn-danger" href="{% url 'delete_chat' chat.name %}">
           удалить чат
     </a>

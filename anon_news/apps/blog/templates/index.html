@@ -17,7 +17,7 @@
 
 <div class="row">
     <div class="col-md-8">
-      {% for p in posts %}
+      {% for p in page_obj %}
         {% if not p.community.is_private %}
         <div class="row">
             <div class="col mb-4">
@@ -74,15 +74,34 @@
         </div>
         {% endif %}
       {% endfor %}
+
+    <div class="posts_pagination">
         <nav aria-label="...">
-          <ul class="pagination pagination-lg">
-            <li class="page-item active" aria-current="page">
-              <span class="page-link">1</span>
+          <ul class="pagination">
+
+            <li class="page-item {% if not page_obj.has_previous %} disabled {% endif %}">
+              <a class="page-link" href="?page={% if page_obj.has_previous %}{{ page_obj.previous_page_number }}{% endif %}">Назад</a>
             </li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
+
+
+          {% for page_number in page_obj.paginator.page_range %}
+
+            <li class="page-item {% if page_number == page_obj.number %} active {% endif %}">
+                <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+            </li>
+
+
+          {% endfor %}
+            <li class="page-item {% if not page_obj.has_next %} disabled {% endif %}">
+                <a class="page-link" href="?page={% if page_obj.has_next %}{{ page_obj.next_page_number }}{% endif %}">Вперед</a>
+            </li>
+
+
+
           </ul>
         </nav>
+    </div>
+
 
     </div>
 </div>

@@ -6,6 +6,11 @@
 <a type="button" class="btn btn-primary" href="{% url 'room' room_name=room_name %}">
       написать сообщение
 </a>
+
+<a type="button" class="btn btn-primary" href="{% url 'add_user_in_chat' some_user.id %}">
+      пригласить юзера в диалог
+</a>
+
 {% if profile_user.is_staff %}
 <a type="button" class="btn btn-danger" href="{% url 'permaban' some_user.pk %}">
     забанить пользователя

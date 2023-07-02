@@ -11,4 +11,7 @@ urlpatterns = [
     path('profile/save_image/', views.save_image, name='save_image'),
 
     path('permaban/<int:pk>/', views.permaban, name='permaban'),
+
+    path('adduser/<int:pk>/', views.AddUser.as_view(), name='add_user_in_chat'),
+    path('adduser2/<str:chat_name>/<int:user_id>/', views.adduser2, name='add_user_in_chat_2'),
 ]

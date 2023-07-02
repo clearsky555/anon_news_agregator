@@ -101,7 +101,7 @@ class Comment(models.Model):
 
 class Notification(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='notifications')
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True)
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True)
     reply_to_comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True, blank=True, related_name='notification_replies')
     is_read = models.BooleanField(default=False)

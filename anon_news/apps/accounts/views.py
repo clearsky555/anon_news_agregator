@@ -6,12 +6,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import AnonymousUser
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
-from django.views.generic import FormView, CreateView, TemplateView
+from django.views.generic import FormView, CreateView, TemplateView, ListView
 from apps.accounts.forms import LoginForm, UserRegisterForm
 from django.http import HttpResponse
 from apps.accounts.models import User, BannedIP
 from django.urls import reverse_lazy
 
+from apps.blog.models import Notification
 from apps.chat.models import Chat
 
 class LoginView(FormView):
@@ -119,4 +120,36 @@ def permaban(request, pk):
     else:
         return redirect('forbidden')
 
+    return redirect('all')
+
+
+class AddUser(LoginRequiredMixin, ListView):
+    template_name = 'adduser.html'
+    model = Chat
+    context_object_name = 'chats'
+
+    def get_queryset(self):
+        user = self.request.user
+        return Chat.objects.filter(participants=user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_id = self.kwargs['pk']
+        user = get_object_or_404(User, id=user_id)
+        context['user_being_added'] = user
+        return context
+
+
+@login_required
+def adduser2(request, chat_name, user_id):
+    chat = Chat.objects.get(name=chat_name)
+    user = User.objects.get(id=user_id)
+    if request.user not in chat.participants.all():
+        return redirect('forbidden')
+    chat.participants.add(user)
+    chat.save()
+    Notification.objects.create(
+                user=user,
+                message=f'{request.user} пригласил вас в общий чат',
+            )
     return redirect('all')

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<p>Выберите чат, в который хотите добавить юзера: </p>
+    {% for chat in chats %}
+    <p>
+        <a href="{% url 'add_user_in_chat_2' chat.name user_being_added.id  %}">
+        {{ chat }}
+        </a>
+        участники чата: {{ chat.participants.all }}
+    </p>
+
+    {% endfor %}
+
+
+{% endblock %}
