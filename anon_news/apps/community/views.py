@@ -70,13 +70,15 @@ class CommunityDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         community = self.get_object()
-        context['community_posts'] = community.community_posts.all()
+        context['community_posts'] = community.community_posts.order_by('-created_at')
         return context
 
 
 @login_required
 def subscribe_community(request, community_slug):
     community = get_object_or_404(Community, slug=community_slug)
+    if community.is_private:
+        return redirect('forbidden')
     user = request.user
     community.subscribers.add(user)
     community.save()

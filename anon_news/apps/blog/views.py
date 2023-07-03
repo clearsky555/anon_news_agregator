@@ -29,6 +29,7 @@ class PopularPostListView(ListView):
     model = Post
     queryset = Post.objects.annotate(total_likes=Count('likes') - Count('dislikes')).order_by('-total_likes')
     context_object_name = 'posts'
+    paginate_by = 15
 
 
 class DiscussPostListView(ListView):
@@ -36,6 +37,7 @@ class DiscussPostListView(ListView):
     model = Post
     queryset = Post.objects.annotate(comment_count=Count('post_comments')).order_by('-comment_count')
     context_object_name = 'posts'
+    paginate_by = 15
 
 
 class PostDetailView(DetailView):

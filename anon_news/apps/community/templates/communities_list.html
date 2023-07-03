@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<h3>Это все сообщества</h3>
+<h3>список сообществ</h3>
 
 <div class="row">
     <div class="col-md-8">
@@ -30,35 +30,32 @@
 
       </div>
 
-    {% if c.is_private %}
+    {% if c.is_private and user not in c.subscribers.all %}
+
         <a type="button" class="btn btn-primary" href="{% url 'membership_application' c.slug %}">
           Подать заявку на вступление
         </a>
 
-    {% else %}
+    {% endif %}
 
-        <a type="button" class="btn btn-primary" href="{% url 'subscribe_community' c.slug %}">
-          Подписаться
-        </a>
+    {% if user.is_authenticated and user in c.subscribers.all %}
 
         <a type="button" class="btn btn-danger" href="{% url 'unsubscribe_community' c.slug %}">
           Отписаться
         </a>
 
+    {% elif not c.is_private %}
+
+        <a type="button" class="btn btn-primary" href="{% url 'subscribe_community' c.slug %}">
+          Подписаться
+        </a>
+
     {% endif %}
 
-        {% if user.is_authenticated and user in c.subscribers.all %}
-            <div class="alert alert-success d-flex align-items-center" role="alert">
-                    <span class="mr-2">&#10003;</span>
-                    <p class="mb-0">Вы подписаны на это сообщество</p>
-            </div>
-        {% else %}
-            <div class="alert alert-secondary" role="alert">
-                    <p class="mb-0">Вы не подписаны</p>
-            </div>
-        {% endif %}
-        ---------------------
-      {% endfor %}
+    <hr>
+
+  {% endfor %}
+
     </div>
 </div>
 
