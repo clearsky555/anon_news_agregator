@@ -30,4 +30,6 @@ urlpatterns = [
 
     path('post/permaban/<int:pk>/', views.post_permaban, name='post_permaban'),
     path('comment/permaban/<int:pk>/', views.comment_permaban, name='comment_permaban'),
+
+    path('search/', views.SearchListView.as_view(), name='search'),
 ]

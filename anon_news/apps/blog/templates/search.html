@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Результаты поиска
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <h3>Результаты поиска для: {{ search_query }}</h3>
+    <p>Найдено: {{ post_count|add:community_count|add:user_count }}</p>
+
+<ul class="nav nav-tabs" id="searchTabs" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active text-secondary" id="postsTab" data-bs-toggle="tab" href="#posts" role="tab" aria-controls="posts" aria-selected="true">Посты <span class="badge bg-dark">{{ post_count }}</span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-secondary" id="communitiesTab" data-bs-toggle="tab" href="#communities" role="tab" aria-controls="communities" aria-selected="false">Сообщества <span class="badge bg-dark">{{ community_count }}</span></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-secondary" id="usersTab" data-bs-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="false">Пользователи <span class="badge bg-dark">{{ user_count }}</a>
+  </li>
+</ul>
+
+<div class="tab-content" id="searchTabContent">
+
+  <div class="tab-pane fade show active" id="posts" role="tabpanel" aria-labelledby="postsTab">
+
+    <div class="row">
+        <div class="col-md-8">
+          {% for p in post_results %}
+            {% if not p.community.is_private %}
+            <div class="row">
+                <div class="col mb-4">
+                    {% if p.community %}
+                    <a href="{% url 'community_detail' p.community.slug %}" class="text-decoration-none">
+                        <h6 class="text-secondary">{{ p.community.title }}</h6>
+                    </a>
+                    {% endif %}
+                    {% if p.author %}
+                        <a href="{% url 'profile' p.author.pk %}" style="text-decoration: none; color: inherit;">
+                        <h6>{{ p.author.username }}</h6>
+                        </a>
+                    {% else %}
+                        <h6>Аноним</h6>
+                    {% endif %}
+
+                    <p>{{ p.created_at|date:'Y-m-d H:i' }}</p>
+                    <a href="{% url 'post_detail' p.id %}" style="text-decoration:none; color:black;">
+                        <h4>{{p.title}}</h4>
+                    </a>
+                <div>
+                    {% if p.image %}
+                        <a href="{% url 'post_detail' p.id %}">
+                        <img src="{{ p.image.url }}" alt="картинки нет" style="width:400px; height: 300px;  object-fit: contain;" href="{% url 'post_detail' p.id %}">
+                        </a>
+                    {% else %}
+                        <p>Картинка отсутствует</p>
+                    {% endif %}
+                </div>
+                <div>
+                    <p>{{ p.description }}</p>
+
+                    <a type="button" class="btn btn-primary" href="{% url 'like_post' p.id %}">
+                          Нравится <span class="badge text-bg-secondary">{{ p.likes.count }}</span>
+                    </a>
+
+                    <a type="button" class="btn btn-danger" href="{% url 'dislike_post' p.id %}">
+                          Не нравится <span class="badge text-bg-secondary">{{ p.dislikes.count }}</span>
+                    </a>
+
+                    <a type="button" class="btn btn-dark" href="{% url 'post_detail' p.id %}">
+                          Комментарии <span class="badge text-bg-secondary">{{ p.post_comments.count }}</span>
+                    </a>
+
+                    {% if user.is_staff %}
+                    <a type="button" class="btn btn-dark" href="{% url 'delete_post' p.id %}">
+                          Удалить пост
+                    </a>
+                    {% endif %}
+
+                    <hr>
+                </div>
+                </div>
+            </div>
+            {% endif %}
+          {% endfor %}
+
+
+        </div>
+    </div>
+
+  </div>
+
+  <div class="tab-pane fade" id="communities" role="tabpanel" aria-labelledby="communitiesTab">
+
+    <div class="row">
+        <div class="col-md-8">
+          {% for c in community_results %}
+          <div class="row">
+                <div class="col mb-4">
+                    {% if c.is_private %}
+                        <p class="text-secondary">приватное сообщество</p>
+                    {% else %}
+                        <p class="text-secondary">открытое сообщество</p>
+                    {% endif %}
+                    {{ c.creator }}
+                    <a href="{% url 'community_detail' c.slug %}">
+                    <h4>{{ c.title }}</h4>
+                    </a>
+                </div>
+              <div>
+                  <p>{{ c.description }}</p>
+              </div>
+              <div>
+                  <p>Количество подписчиков: {{ c.subscribers.count }}</p>
+              </div>
+
+
+          </div>
+
+        {% if c.is_private and user not in c.subscribers.all %}
+
+            <a type="button" class="btn btn-primary" href="{% url 'membership_application' c.slug %}">
+              Подать заявку на вступление
+            </a>
+
+        {% endif %}
+
+        {% if user.is_authenticated and user in c.subscribers.all %}
+
+            <a type="button" class="btn btn-danger" href="{% url 'unsubscribe_community' c.slug %}">
+              Отписаться
+            </a>
+
+        {% elif not c.is_private %}
+
+            <a type="button" class="btn btn-primary" href="{% url 'subscribe_community' c.slug %}">
+              Подписаться
+            </a>
+
+        {% endif %}
+
+        <hr>
+
+      {% endfor %}
+
+        </div>
+    </div>
+
+  </div>
+
+  <div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="usersTab">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA=" crossorigin="anonymous" />
+<div class="container mt-3 mb-4">
+<div class="col-lg-9 mt-4 mt-lg-0">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="user-dashboard-info-box table-responsive mb-0 bg-white p-4 shadow-sm">
+          <table class="table manage-candidates-top mb-0">
+            <thead>
+              <tr>
+                <th>Пользователь</th>
+                <th class="text-center">Рейтинг</th>
+              </tr>
+            </thead>
+            <tbody>
+
+            {% for user in user_results %}
+
+              <tr class="candidates-list">
+                <td class="title">
+                  <div class="thumb">
+                    <img class="img-fluid" src="{{ user.image.url }}" alt="">
+                  </div>
+                  <div class="candidate-list-details">
+                    <div class="candidate-list-info">
+                      <div class="candidate-list-title">
+
+                        <h5 class="mb-0"><a href="{% url 'profile' user.pk %}" style="text-decoration: none; color: inherit;">{{ user }}</a></h5>
+
+                      </div>
+                      <div class="candidate-list-option">
+<!--                        <ul class="list-unstyled">-->
+<!--                          <li><i class="fas fa-filter pr-1"></i>Information Technology</li>-->
+<!--                          <li><i class="fas fa-map-marker-alt pr-1"></i>Rolling Meadows, IL 60008</li>-->
+<!--                        </ul>-->
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td class="candidate-list-favourite-time text-center">
+                  <a class="candidate-list-favourite order-2 text-danger" href="#"><i class="fas fa-heart"></i></a>
+                  <span class="candidate-list-time order-1">{{ user.total_likes|add:user.total_dislikes }}</span>
+                </td>
+
+              </tr>
+
+            {% endfor %}
+
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+
+</div>
+
+{% endblock %}

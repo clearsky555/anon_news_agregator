@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.db.models import Count
+from django.db.models import Count, Q, QuerySet
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, TemplateView
@@ -22,6 +22,49 @@ class PostListView(ListView):
     queryset = Post.objects.order_by('-created_at')  # Упорядочить посты по убыванию времени создания
     context_object_name = 'posts'
     paginate_by = 15
+
+
+class SearchListView(ListView):
+    template_name = 'search.html'
+
+    def get_queryset(self):
+        search_query = self.request.GET.get('search', '')
+        post_queryset = None
+        community_queryset = None
+        user_queryset = None
+
+        if search_query:
+            post_queryset = Post.objects.filter(
+                title__icontains=search_query
+            )
+            community_queryset = Community.objects.filter(
+                title__icontains=search_query
+            )
+            user_queryset = User.objects.filter(
+                username__icontains=search_query
+            )
+
+        return post_queryset, community_queryset, user_queryset
+
+    def get(self, request, *args, **kwargs):
+        post_queryset, community_queryset, user_queryset = self.get_queryset()
+        search_query = self.request.GET.get('search', '')
+
+        post_count = post_queryset.count() if post_queryset else 0
+        community_count = community_queryset.count() if community_queryset else 0
+        user_count = user_queryset.count() if user_queryset else 0
+
+        context = {
+            'post_results': post_queryset,
+            'community_results': community_queryset,
+            'user_results': user_queryset,
+            'search_query': search_query,
+            'post_count': post_count,
+            'community_count': community_count,
+            'user_count': user_count,
+        }
+
+        return render(request, self.template_name, context)
 
 
 class PopularPostListView(ListView):
