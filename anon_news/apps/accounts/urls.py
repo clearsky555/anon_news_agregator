@@ -14,4 +14,6 @@ urlpatterns = [
 
     path('adduser/<int:pk>/', views.AddUser.as_view(), name='add_user_in_chat'),
     path('adduser2/<str:chat_name>/<int:user_id>/', views.adduser2, name='add_user_in_chat_2'),
+
+    path('send_message/<int:user_id>/', views.send_message, name='send_message'),
 ]

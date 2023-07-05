@@ -4,6 +4,7 @@ import uuid
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import AnonymousUser
+from django.db.models import Count, Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import FormView, CreateView, TemplateView, ListView
@@ -49,27 +50,57 @@ class Profile(TemplateView):
 
         context['some_user'] = some_user
         context['profile_user'] = self.request.user  # Добавляем переменную profile_user в контекст
-        print('--------------')
-        print(self.request.user)
-        print('--------------')
+        # print('--------------')
+        # print(self.request.user)
+        # print('--------------')
 
-        if not isinstance(self.request.user, AnonymousUser):
-            existing_chat = Chat.objects.filter(participants=some_user).filter(participants=self.request.user).first()
-
-            if existing_chat:
-                context['room_name'] = existing_chat.name
-            else:
-                # Создаем новый диалог
-                room_name = str(uuid.uuid4())
-                Chat.objects.create(name=room_name)
-                chat_instance = Chat.objects.get(name=room_name)
-                chat_instance.participants.add(some_user, self.request.user)
-                chat_instance.save()
-                context['room_name'] = room_name
-        else:
-            context['room_name'] = 'anon'
-
+        # if not isinstance(self.request.user, AnonymousUser):
+        #     existing_chat = Chat.objects.filter(participants=some_user).filter(participants=self.request.user).first()
+        #
+        #     if existing_chat:
+        #         context['room_name'] = existing_chat.name
+        #     else:
+        #         # Создаем новый диалог
+        #         room_name = str(uuid.uuid4())
+        #         Chat.objects.create(name=room_name)
+        #         chat_instance = Chat.objects.get(name=room_name)
+        #         chat_instance.participants.add(some_user, self.request.user)
+        #         chat_instance.save()
+        #         context['room_name'] = room_name
+        # else:
+        #     context['room_name'] = 'anon'
+        #
         return context
+
+
+@login_required
+def send_message(request, user_id):
+    some_user = User.objects.get(id=user_id)
+    user = request.user
+    user_chats = user.chats.filter(participants__in=[user, some_user]).filter(participants=some_user)
+    existing_chat = None
+    for c in user_chats:
+        if c.participants.count() == 2:
+            existing_chat = c
+            break
+    # chats = some_user.chats.filter(participants__in=[user, some_user]).filter(participants=user).order_by('-participants')
+
+
+    # existing_chat = Chat.objects.filter(participants=some_user).filter(participants=request.user).annotate(
+    #     user_count=Count('participants')).order_by('-user_count')
+    # print(existing_chat)
+    # print('existing_chat-------------------')
+
+    if existing_chat:
+        return redirect('room', existing_chat.name)
+    else:
+        # Создаем новый диалог
+        room_name = str(uuid.uuid4())
+        Chat.objects.create(name=room_name)
+        chat_instance = Chat.objects.get(name=room_name)
+        chat_instance.participants.add(some_user, request.user)
+        chat_instance.save()
+        return redirect('room', room_name)
 
 
 class UserRegisterView(CreateView):

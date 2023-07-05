@@ -1,40 +1,54 @@
-<!-- chat/templates/chat/index.html -->
 {% extends 'base.html' %}
-
-{% block title %}
-Chat Rooms
-{% endblock %}
 {% block content %}
-<body>
-    Напишите название комнаты<br>
-    <input id="room-name-input" type="text" size="100"><br>
-    <input id="room-name-submit" type="button" value="Enter">
+<section style="background-color: #eee;">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0">
+        <h5 class="font-weight-bold mb-3 text-center text-lg-start">чаты</h5>
+        <div class="card">
+          <div class="card-body">
+            <ul class="list-unstyled mb-0">
+              {% for chat in chats %}
+                <li class="p-2 border-bottom">
+                  <a href="#!" class="d-flex justify-content-between">
+                    <div class="d-flex flex-row">
+                      <a href="{% url 'room' room_name=chat.name %}">
+                      <img src="{{ chat.messages.last.sender.image.url }}" alt="avatar" class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
+                      </a>
+                      <div class="pt-1">
+                        <a href="{% url 'room' room_name=chat.name %}">
+                          <p class="fw-bold mb-0">{{ chat.messages.last.sender.username }}</p>
+                        </a>
+                        <p class="small text-muted">{{ chat.messages.last.text_message }}</p>
+                      </div>
+                    </div>
+                    <div class="pt-1">
+                      <p class="small text-muted mb-1">{{ chat.messages.last.timestamp }}</p>
+                    </div>
+                  </a>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="pt-1">
+                      <p class="small text-muted mb-1">участники чата: </p>
+                      <ul>
+                        {% for participant in chat.participants.all %}
+                          <li>{{ participant.username }}</li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                    <div>
+                      <a type="button" class="btn btn-danger" href="{% url 'delete_chat' chat.name %}">
+                        удалить чат
+                      </a>
+                    </div>
+                  </div>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    {% for chat in chats %}
-    <p>
-        <a href="{% url 'room' room_name=chat.name %}">
-        {{ chat }}
-        </a>
-        участники чата: {{ chat.participants.all }}
-    </p>
-
-    <a type="button" class="btn btn-danger" href="{% url 'delete_chat' chat.name %}">
-          удалить чат
-    </a>
-    {% endfor %}
-
-    <script>
-        document.querySelector('#room-name-input').focus();
-        document.querySelector('#room-name-input').onkeyup = function(e) {
-            if (e.keyCode === 13) {  // enter, return
-                document.querySelector('#room-name-submit').click();
-            }
-        };
-
-        document.querySelector('#room-name-submit').onclick = function(e) {
-            var roomName = document.querySelector('#room-name-input').value;
-            window.location.pathname = '/chat/' + roomName + '/';
-        };
-    </script>
-</body>
 {% endblock %}

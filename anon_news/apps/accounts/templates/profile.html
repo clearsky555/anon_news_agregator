@@ -2,64 +2,139 @@
 
 
 {% block content %}
-<p>это страница пользователя {{ some_user.username }}</p>
-<a type="button" class="btn btn-primary" href="{% url 'room' room_name=room_name %}">
-      написать сообщение
-</a>
+<section class="h-100 gradient-custom-2">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-lg-9 col-xl-7">
+        <div class="card">
+          <div class="rounded-top text-white d-flex flex-row" style="background-color: #000; height:200px;">
+            <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
 
-<a type="button" class="btn btn-primary" href="{% url 'add_user_in_chat' some_user.id %}">
-      пригласить юзера в диалог
-</a>
+            {% if some_user.image %}
 
-{% if profile_user.is_staff %}
-<a type="button" class="btn btn-danger" href="{% url 'permaban' some_user.pk %}">
-    забанить пользователя
-</a>
-{% endif %}
+              <img src="{{ some_user.image.url }}"
+                alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
+                style="width: 150px; z-index: 1">
 
-<div class="form-group">
-<label>Аватарка</label>
-    {% if some_user.image %}
-        <img src="{{ some_user.image.url }}" alt="аватарка по каким-то причинам не загрузилась...">
-    {% else %}
-        <p> аватарки нет </p>
-    {% endif %}
+            {% else %}
 
-    <h3>Посты пользователя: </h3>
-    {% for post in some_user.posts.all %}
-        <a href="{% url 'post_detail' post.pk %}">
-        <p>{{ post.title }}</p>
-        </a>
-    {% endfor %}
+                <p> аватарки нет </p>
 
-    <h3>Комментарии пользователя: </h3>
-    {% for comment in some_user.comments.all %}
-    <a href="{{ comment.post.get_absolute_url }}">
-        <p>{{ comment.text }}</p>
-        </a>
-    {% endfor %}
+            {% endif %}
 
-    <h3>сумма всех МОИХ лайков к постам: {{ some_user.liked_posts.count }}</h3>
-    <h3>сумма всех МОИХ лайков к комментариям: {{ some_user.liked_comments.count }}</h3>
+            </div>
+            <div class="ms-3" style="margin-top: 130px;">
+              <h5>{{ some_user.username }}</h5>
+<!--              <p>New York</p>-->
+            </div>
+          </div>
+          <div class="p-4 text-black" style="background-color: #f8f9fa;">
+            <div class="d-flex justify-content-end text-center py-1">
+              <div>
+                <p class="mb-1 h5">{{ some_user.total_likes }}</p>
+                <p class="small text-muted mb-0">лайки</p>
+              </div>
+              <div class="px-3">
+                <p class="mb-1 h5">{{ some_user.total_dislikes }}</p>
+                <p class="small text-muted mb-0">дизлайки</p>
+              </div>
+              <div>
+                <p class="mb-1 h5">{{ some_user.total_likes|add:some_user.total_dislikes }}</p>
+                <p class="small text-muted mb-0">рейтинг</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-body p-4 text-black">
 
-    <h3> всего лайков за посты и комментарии {{ some_user.total_likes }}</h3>
+              <a type="button" style="z-index: 1;" class="btn btn-outline-dark" data-mdb-ripple-color="dark" href="{% url 'add_user_in_chat' some_user.id %}">
+                пригласить юзера в чат
+              </a>
 
-    <h3> всего дизлайков за посты и комментарии {{ some_user.total_dislikes }}</h3>
+              <a type="button" style="z-index: 1;" class="btn btn-outline-dark" data-mdb-ripple-color="dark" href="{% url 'send_message' some_user.id %}">
+                написать сообщение
+              </a>
 
-    <h3>рейтинг юзера {{ some_user.username }}: {{ some_user.total_likes|add:some_user.total_dislikes }}</h3>
+            {% if profile_user.is_staff %}
+            <a type="button" class="btn btn-danger" href="{% url 'permaban' some_user.pk %}">
+                забанить пользователя
+            </a>
+            {% endif %}
 
+            <div class="mb-5">
 
 
     {% if some_user == profile_user %}
+
+    <p class="lead fw-normal mb-1">сменить аватарку</p>
     <form method="POST" enctype="multipart/form-data" action="{% url 'save_image'  %}">
+
     {% csrf_token %}
+
     <input type="file" name="image">
+
         {{ form.image }}
-    <button type="submit">Загрузить аватарку</button>
+
+    <button type="submit">Загрузить</button>
     </form>
+
     {% endif %}
 
+            </div>
+
+<div class="container">
+  <ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+      <a class="nav-link active" id="posts-tab" data-bs-toggle="tab" href="#posts" role="tab" aria-controls="posts" aria-selected="true">Посты</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="comments-tab" data-bs-toggle="tab" href="#comments" role="tab" aria-controls="comments" aria-selected="false">Комментарии</a>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane fade show active" id="posts" role="tabpanel" aria-labelledby="posts-tab">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <p class="lead fw-normal mb-0">Посты</p>
+      </div>
+
+      {% for post in some_user.posts.all %}
+        <div class="row g-2">
+          <div class="col mb-2">
+            <a href="{% url 'post_detail' post.pk %}">
+              <p>{{ post.title }}</p>
+            </a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="tab-pane fade" id="comments" role="tabpanel" aria-labelledby="comments-tab">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <p class="lead fw-normal mb-0">Комментарии</p>
+      </div>
+
+    {% for comment in some_user.comments.all %}
+      <div class="row g-2">
+        <div class="col mb-2">
+          <a href="{{ comment.post.get_absolute_url }}">
+            <p>{{ comment.text }}</p>
+          </a>
+        </div>
+      </div>
+    {% endfor %}
+
+
+    </div>
+  </div>
 </div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 
 {% endblock %}
