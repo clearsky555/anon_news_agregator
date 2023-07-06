@@ -546,3 +546,35 @@ body{
 .user-dashboard-info-box .candidates-list .thumb {
     margin-right: 20px;
 }
+
+.chat-card:hover {
+background-color: #f2f2f2;
+}
+
+
+.trash-icon {
+background-color: white;
+border: 1px solid #dc3545;
+transition: background-color 0.3s;
+position: absolute;
+bottom: 5px;
+right: 5px;
+}
+
+.trash-icon:hover {
+background-color: #dc3545;
+border-color: #dc3545;
+}
+
+.trash-icon svg {
+fill: #dc3545;
+transition: fill 0.3s;
+}
+
+.trash-icon:hover svg {
+fill: white;
+}
+
+.card {
+  flex-grow: 1;
+}

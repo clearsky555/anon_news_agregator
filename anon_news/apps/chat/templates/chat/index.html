@@ -9,17 +9,17 @@
           <div class="card-body">
             <ul class="list-unstyled mb-0">
               {% for chat in chats %}
-                <li class="p-2 border-bottom">
+                <li class="p-2 border-bottom chat-card" style="position: relative;">
                   <a href="#!" class="d-flex justify-content-between">
                     <div class="d-flex flex-row">
                       <a href="{% url 'room' room_name=chat.name %}">
                       <img src="{{ chat.messages.last.sender.image.url }}" alt="avatar" class="rounded-circle d-flex align-self-center me-3 shadow-1-strong" width="60">
                       </a>
                       <div class="pt-1">
-                        <a href="{% url 'room' room_name=chat.name %}">
+                        <a href="{% url 'room' room_name=chat.name %}" style="text-decoration: none;">
                           <p class="fw-bold mb-0">{{ chat.messages.last.sender.username }}</p>
+                          <p class="small text-muted">{{ chat.messages.last.text_message }}</p>
                         </a>
-                        <p class="small text-muted">{{ chat.messages.last.text_message }}</p>
                       </div>
                     </div>
                     <div class="pt-1">
@@ -36,8 +36,11 @@
                       </ul>
                     </div>
                     <div>
-                      <a type="button" class="btn btn-danger" href="{% url 'delete_chat' chat.name %}">
-                        удалить чат
+                      <a type="button" class="btn btn-danger trash-icon" href="{% url 'delete_chat' chat.name %}">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+                            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+                          </svg>
                       </a>
                     </div>
                   </div>
