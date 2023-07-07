@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.sites.shortcuts import get_current_site
 from django.db.models import Count, Q, QuerySet
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404
@@ -7,7 +8,7 @@ from django.views.generic import ListView, DetailView, CreateView, TemplateView
 from apps.accounts.models import User, BannedIP
 from apps.blog.models import Post, Category, Comment, Notification
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from apps.blog.forms import PostCreationForm, CommentForm
 from django.shortcuts import redirect
 from django.utils import timezone
@@ -35,7 +36,8 @@ class SearchListView(ListView):
 
         if search_query:
             post_queryset = Post.objects.filter(
-                title__icontains=search_query
+                Q(title__icontains=search_query)|
+                Q(description__icontains=search_query),
             )
             community_queryset = Community.objects.filter(
                 title__icontains=search_query
@@ -194,7 +196,9 @@ def save_comment_reply_form(request, post_id, comment_id):
             comment.ip_address = ip
             
             comment.save()
-
+            # current_site = get_current_site(request)
+            # url = reverse('profile', args=[comment.author.pk])
+            # full_url = f"{request.scheme}://{current_site.domain}{url}"
             # Создаем объект уведомления при реплае к комментарию
             Notification.objects.create(
                 user=parent_comment.author,  # Автору комментария, на который был оставлен реплай

@@ -10,7 +10,8 @@
     <div class="col-md-8">
       {% for p in page_obj %}
         {% if not p.community.is_private %}
-        <div class="row">
+        <div class="row post-body">
+
             <div class="col mb-4">
                 {% if p.community %}
                 <a href="{% url 'community_detail' p.community.slug %}" class="text-decoration-none">
@@ -59,7 +60,6 @@
                 </a>
                 {% endif %}
 
-                <hr>
             </div>
             </div>
         </div>

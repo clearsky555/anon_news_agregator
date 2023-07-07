@@ -9,13 +9,19 @@
       <div class="row">
           <div class="col-md-9 mb40">
               <article>
-                {% if post.image %}
-                    <img src="{{ post.image.url }}" alt="" class="img-fluid mb30">
-                {% else %}
-                    <p>Картинка отсутствует</p>
-                {% endif %}
+
                   <div class="post-content">
+                      <div class="post-body">
                       <h3>{{ post.title }}</h3>
+                          {% if post.image %}
+                            <div style="max-height: 600px; overflow: hidden;">
+                              <a href="{{ post.image.url }}" target="_blank">
+                                <img src="{{ post.image.url }}" alt="" class="img-fluid mb30 post-img">
+                              </a>
+                            </div>
+                              {% else %}
+            <!--                    <p>Картинка отсутствует</p>-->
+                            {% endif %}
                       <ul class="post-meta list-inline">
                           <li class="list-inline-item">
                               <i class="fa fa-user-circle-o"></i>
@@ -30,13 +36,13 @@
                           <li class="list-inline-item">
                               <i class="fa fa-calendar-o"></i> <a href="#">{{ post.created_at }}</a>
                           </li>
-                          <li class="list-inline-item">
-                              <i class="fa fa-tags"></i> <a href="#">Bootstrap4</a>
-                          </li>
+<!--                          <li class="list-inline-item">-->
+<!--                              <i class="fa fa-tags"></i> <a href="#">Bootstrap4</a>-->
+<!--                          </li>-->
                       </ul>
 
                       <p>{{ post.description }}</p>
-
+</div>
                       <a type="button" class="btn btn-primary" href="{% url 'like_post' post.id %}">
                       Нравится <span class="badge text-bg-secondary">{{ post.likes.count }}</span>
                       </a>
