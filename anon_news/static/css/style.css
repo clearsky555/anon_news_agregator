@@ -595,13 +595,7 @@ fill: white;
     border-color: #d8f7eb;
 }
 
-.post-body {
-    background-color: #fafafa;
-    padding: 15px;
-    margin-bottom: 15px;
-    margin-top: 15px;
 
-}
 
 -------
 
@@ -810,4 +804,63 @@ a.forum-item-title:hover {
 }
 .container {
     margin-top: 20px;
+}
+
+.community-header {
+    background-color: #fafafa;
+    padding: 15px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    position: relative;
+}
+
+.post-body {
+    background-color: #fafafa;
+    padding: 15px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+
+}
+.subscribe-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  font-size: 16px;
+  font-weight: normal;
+  text-align: center;
+  border-radius: 5px;
+  background-color: #fafafa;
+  color: black;
+  cursor: pointer;
+}
+
+.subscribe-button:hover {
+  background-color: #eeeeee;
+}
+
+.subscribe-button svg {
+  margin-left: 5px;
+}
+
+
+.btn-heart:hover svg,
+.btn-heart:hover .like-count {
+    fill: #ee3441;
+    color: #ee3441;
+}
+
+.btn-dislike:hover svg,
+.btn-dislike:hover .dislike-count {
+    fill: orange;
+    color: orange;
+}
+
+.btn-comment:hover svg,
+.btn-comment:hover .comment-count {
+    fill: blue;
+    color: blue;
 }
