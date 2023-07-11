@@ -4,6 +4,7 @@ import uuid
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import AnonymousUser
+from django.core.paginator import Paginator
 from django.db.models import Count, Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
@@ -49,28 +50,28 @@ class Profile(TemplateView):
         some_user = User.objects.get(id=pk)
 
         context['some_user'] = some_user
-        context['profile_user'] = self.request.user  # Добавляем переменную profile_user в контекст
-        # print('--------------')
-        # print(self.request.user)
-        # print('--------------')
+        context['profile_user'] = self.request.user
 
-        # if not isinstance(self.request.user, AnonymousUser):
-        #     existing_chat = Chat.objects.filter(participants=some_user).filter(participants=self.request.user).first()
-        #
-        #     if existing_chat:
-        #         context['room_name'] = existing_chat.name
-        #     else:
-        #         # Создаем новый диалог
-        #         room_name = str(uuid.uuid4())
-        #         Chat.objects.create(name=room_name)
-        #         chat_instance = Chat.objects.get(name=room_name)
-        #         chat_instance.participants.add(some_user, self.request.user)
-        #         chat_instance.save()
-        #         context['room_name'] = room_name
-        # else:
-        #     context['room_name'] = 'anon'
-        #
         return context
+
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        some_user = User.objects.get(id=pk)
+        post_list = some_user.posts.all()
+        comment_list = some_user.comments.all()
+        paginator = Paginator(post_list, 5)  # Show 5 posts per page.
+        comment_paginator = Paginator(comment_list, 5)
+
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+        comment_page_obj = comment_paginator.get_page(page_number)
+        context = {
+            "page_obj": page_obj,
+            'comment_page_obj': comment_page_obj,
+            "some_user": some_user,
+            "profile_user": self.request.user
+        }
+        return render(request, "profile.html", context)
 
 
 @login_required

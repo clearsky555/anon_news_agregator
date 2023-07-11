@@ -37,6 +37,7 @@ class AllCommunitiesView(ListView):
     model = Community
     queryset = Community.objects.all()
     context_object_name = 'communities'
+    paginate_by = 10
 
 
 class PopularCommunitiesView(ListView):
@@ -44,6 +45,7 @@ class PopularCommunitiesView(ListView):
     model = Community
     queryset = Community.objects.annotate(num_subscribers=Count('subscribers')).order_by('-num_subscribers')
     context_object_name = 'communities'
+    paginate_by = 10
 
 
 @login_required
@@ -205,6 +207,7 @@ class SubscribersListView(ListView):
     template_name = 'subscribers.html'
     model = User
     context_object_name = 'subscribers'
+    paginate_by = 5
 
     def get_queryset(self):
         community_slug = self.kwargs['community_slug']

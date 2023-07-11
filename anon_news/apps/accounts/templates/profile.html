@@ -97,7 +97,7 @@
         <p class="lead fw-normal mb-0">Посты</p>
       </div>
 
-      {% for post in some_user.posts.all %}
+      {% for post in page_obj %}
         <div class="row g-2">
           <div class="col mb-2">
             <a href="{% url 'post_detail' post.pk %}">
@@ -106,6 +106,35 @@
           </div>
         </div>
       {% endfor %}
+
+          <div class="posts_pagination">
+        <nav aria-label="...">
+          <ul class="pagination">
+
+            <li class="page-item {% if not page_obj.has_previous %} disabled {% endif %}">
+              <a class="page-link" href="?page={% if page_obj.has_previous %}{{ page_obj.previous_page_number }}{% endif %}">Назад</a>
+            </li>
+
+
+          {% for page_number in page_obj.paginator.page_range %}
+
+            <li class="page-item {% if page_number == page_obj.number %} active {% endif %}">
+                <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+            </li>
+
+
+          {% endfor %}
+            <li class="page-item {% if not page_obj.has_next %} disabled {% endif %}">
+                <a class="page-link" href="?page={% if page_obj.has_next %}{{ page_obj.next_page_number }}{% endif %}">Вперед</a>
+            </li>
+
+
+
+          </ul>
+        </nav>
+    </div>
+
+
     </div>
 
     <div class="tab-pane fade" id="comments" role="tabpanel" aria-labelledby="comments-tab">
@@ -113,7 +142,7 @@
         <p class="lead fw-normal mb-0">Комментарии</p>
       </div>
 
-    {% for comment in some_user.comments.all %}
+    {% for comment in comment_page_obj %}
       <div class="row g-2">
         <div class="col mb-2">
           <a href="{{ comment.post.get_absolute_url }}">
@@ -122,7 +151,32 @@
         </div>
       </div>
     {% endfor %}
+          <div class="posts_pagination">
+        <nav aria-label="...">
+          <ul class="pagination">
 
+            <li class="page-item {% if not comment_page_obj.has_previous %} disabled {% endif %}">
+              <a class="page-link" href="?page={% if comment_page_obj.has_previous %}{{ comment_page_obj.previous_page_number }}{% endif %}">Назад</a>
+            </li>
+
+
+          {% for page_number in comment_page_obj.paginator.page_range %}
+
+            <li class="page-item {% if page_number == comment_page_obj.number %} active {% endif %}">
+                <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+            </li>
+
+
+          {% endfor %}
+            <li class="page-item {% if not comment_page_obj.has_next %} disabled {% endif %}">
+                <a class="page-link" href="?page={% if comment_page_obj.has_next %}{{ comment_page_obj.next_page_number }}{% endif %}">Вперед</a>
+            </li>
+
+
+
+          </ul>
+        </nav>
+    </div>
 
     </div>
   </div>
