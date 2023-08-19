@@ -19,3 +19,6 @@ class Community(models.Model):
 
     def __str__(self):
         return f'{self.title}'
+
+
+    # СНАЧАЛА ДЕЛАЕШЬ МИГРАЦИИ КОМЬЮНИТИ А ПОТОМ МИГРАЦИИ БЛОГА № 9 ИНАЧЕ БУДЕТ КОНФЛИКТ

@@ -30,13 +30,15 @@
                 <a href="{% url 'post_detail' p.id %}" style="text-decoration:none; color:black;">
                     <h4>{{p.title}}</h4>
                 </a>
-            <div>
+            <div style="background-color: #ebebeb;">
                 {% if p.image %}
                     <a href="{% url 'post_detail' p.id %}">
-                    <img src="{{ p.image.url }}" alt="картинки нет" style="width:400px; height: 300px;  object-fit: contain;" href="{% url 'post_detail' p.id %}">
+                        <img src="{{ p.image.url }}" alt="картинки нет" style="width: 100%; height: 400px; object-fit: contain;">
                     </a>
                 {% endif %}
             </div>
+
+
             <div>
                 <p>{{ p.description|linebreaksbr }}</p>
                 <hr>

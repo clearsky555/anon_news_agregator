@@ -370,8 +370,9 @@ body{
     margin-top:20px
 }
 .comment-image {
-  width: 100%; /* Adjust the width as needed */
-  height: auto; /* Maintain the aspect ratio */
+  max-width: 100%; /* Максимальная ширина равна 100% от доступного пространства */
+  height: auto; /* Поддерживаем пропорции */
+  max-height: 300px; /* Максимальная высота равна 300 пикселям */
 }
 
 
