@@ -69,6 +69,22 @@ class SearchListView(ListView):
         return render(request, self.template_name, context)
 
 
+class MyPostsListView(LoginRequiredMixin, ListView):
+    template_name = 'my_feed.html'
+    model = Post
+    context_object_name = 'posts'
+    paginate_by = 15
+
+    def get_queryset(self):
+        user = self.request.user
+        subscribed_communities = user.sub_communities.all()
+        posts = []
+        for community in subscribed_communities:
+            posts.extend(community.community_posts.all())
+        posts.sort(key=lambda post: post.created_at, reverse=True)
+        return posts
+
+
 class PopularPostListView(ListView):
     template_name = 'index.html'
     model = Post

@@ -79,14 +79,18 @@
 
 
           <div class="col-md-8">
-                <div class="media g-mb-30 media-comment">
+                  <div class="d-flex media g-mb-30 media-comment">
                     {% if comment.author is not None %}
+                    <div class="align-self-start">
                     <img class="d-flex g-width-50 g-height-50 rounded-circle g-mt-3 g-mr-15" src="{{ comment.author.image.url }}" alt="Image Description">
-                    {% else %}
+                    </div>
+                              {% else %}
                     {% load static %}
+
                     <img class="d-flex g-width-50 g-height-50 rounded-circle g-mt-3 g-mr-15" src="{% static 'images/default55555.png' %}" alt="Image Description">
+
                     {% endif %}
-                    <div class="media-body u-shadow-v18 g-bg-secondary g-pa-30">
+                    <div class="media-body u-shadow-v18 g-bg-secondary g-pa-30 flex-grow-1 align-self-stretch">
                       <div class="g-mb-15">
 
                           <div class="g-mb-15 row">

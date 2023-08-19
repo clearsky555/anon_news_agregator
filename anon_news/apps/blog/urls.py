@@ -32,4 +32,6 @@ urlpatterns = [
     path('comment/permaban/<int:pk>/', views.comment_permaban, name='comment_permaban'),
 
     path('search/', views.SearchListView.as_view(), name='search'),
+
+    path('myfeed/', views.MyPostsListView.as_view(), name='my_feed'),
 ]
