@@ -865,3 +865,14 @@ a.forum-item-title:hover {
     fill: blue;
     color: blue;
 }
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.wrapper {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  min-height: 100vh;
+}
