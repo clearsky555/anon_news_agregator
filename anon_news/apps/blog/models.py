@@ -7,7 +7,7 @@ from django.utils.safestring import mark_safe
 from django.urls import reverse
 
 from apps.community.models import Community
-
+from datetime import timedelta
 
 class Category(models.Model):
     name = models.CharField(verbose_name='Название категории', max_length=100)
@@ -36,7 +36,7 @@ class Post(models.Model):
 
     ip_address = models.GenericIPAddressField(null=True, blank=True)
 
-
+    commented_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     class Meta:
         verbose_name = 'Пост'
@@ -69,6 +69,8 @@ class Comment(models.Model):
         super().save(*args, **kwargs)
 
         if created:
+            self.post.commented_at = timezone.now()
+            self.post.save()
             existing_notification = Notification.objects.filter(user=self.post.author, post=self.post, comment=self).first()
             if not existing_notification:
                 # Create a notification only for the author of the post
