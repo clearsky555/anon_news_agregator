@@ -82,7 +82,10 @@
                   <div class="d-flex media g-mb-30 media-comment">
                     {% if comment.author is not None %}
                     <div class="align-self-start">
-                    <img class="d-flex g-width-50 g-height-50 rounded-circle g-mt-3 g-mr-15" src="{{ comment.author.image.url }}" alt="Image Description">
+                    <img class="d-flex g-width-50 g-height-50 rounded-circle g-mt-3 g-mr-15"
+                         src="{{ comment.author.image.url }}"
+                         alt="anon"
+                         style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
                     </div>
                               {% else %}
                     {% load static %}

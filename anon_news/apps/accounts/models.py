@@ -1,9 +1,15 @@
+import os
+
 from django.db import models
 
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
 from django.db.models import Sum
 from django.http import HttpResponseForbidden
+
+
+def default_avatar_path():
+    return os.path.join('images', 'default55555.png')
 
 
 class UserManager(BaseUserManager):
