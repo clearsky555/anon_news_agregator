@@ -19,4 +19,4 @@ COPY . .
 
 EXPOSE 8081
 
-ENTRYPOINT ["sh", "./docker_entrypoint.sh", "gunicorn", "config.wsgi"]
+ENTRYPOINT ["sh", "./docker_entrypoint.sh"]
