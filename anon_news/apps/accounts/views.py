@@ -185,3 +185,19 @@ def adduser2(request, chat_name, user_id):
                 message=f'{request.user} пригласил вас в общий чат',
             )
     return redirect('all')
+
+
+from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import  AllowAny
+from rest_framework.response import Response
+from apps.api.serializers import CreateUserSerializer
+
+
+class CreateUserAPIView(CreateAPIView):
+    serializer_class = CreateUserSerializer
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        message = "User registered successfully"
+        return Response(data={"message":message, "data":response.data})

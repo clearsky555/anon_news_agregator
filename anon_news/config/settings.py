@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'drf_yasg',
 
     'apps.accounts',
     'apps.blog',
@@ -102,7 +103,7 @@ DATABASES = {
         'PORT': os.getenv('PORT'),
 
         "TEST": {
-            "NAME": BASE_DIR / "db.sqlite3",
+            "NAME": "db.sqlite3",
         },
     }
 }
@@ -163,7 +164,15 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("anon_redis", 6379)],
+            # "hosts": [("anon_redis", 6379)],
+            "hosts": [("localhost", 6379)],
+
         },
     },
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
 }
