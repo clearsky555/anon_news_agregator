@@ -36,7 +36,7 @@ ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     'daphne',
-    'apps.chat',
+    'chat',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,10 +47,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_yasg',
 
-    'apps.accounts',
-    'apps.blog',
-    'apps.community',
-    'apps.api',
+    'accounts',
+    'blog',
+    'community',
+    'api',
 ]
 
 MIDDLEWARE = [
