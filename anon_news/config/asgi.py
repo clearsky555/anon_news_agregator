@@ -22,9 +22,9 @@ from channels.auth import AuthMiddlewareStack
 from channels.security.websocket import AllowedHostsOriginValidator
 
 
-from apps.chat import routing
+from anon_news.apps.chat import routing
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "anon_news.config.settings")
 django_asgi_app = get_asgi_application()
 
 application = ProtocolTypeRouter(
